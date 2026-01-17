@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'theme/app_theme.dart';
-import 'screens/home_screen.dart';
-import 'screens/programs_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -10,193 +7,119 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
+  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'EXcelerate Connect',
-      debugShowCheckedModeBanner: false,
-      theme: AppTheme.lightTheme,
-      home: const RootShell(),
+      title: 'Excelerate Connect',
+      theme: ThemeData(
+        // This is the theme of your application.
+        //
+        // TRY THIS: Try running your application with "flutter run". You'll see
+        // the application has a purple toolbar. Then, without quitting the app,
+        // try changing the seedColor in the colorScheme below to Colors.green
+        // and then invoke "hot reload" (save your changes or press the "hot
+        // reload" button in a Flutter-supported IDE, or press "r" if you used
+        // the command line to start the app).
+        //
+        // Notice that the counter didn't reset back to zero; the application
+        // state is not lost during the reload. To reset the state, use hot
+        // restart instead.
+        //
+        // This works for code too, not just values: Most code changes can be
+        // tested with just a hot reload.
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        useMaterial3: true,
+      ),
+      home: const MyHomePage(title: 'Excelerate Connect'),
     );
   }
 }
 
-class RootShell extends StatefulWidget {
-  const RootShell({super.key});
+class MyHomePage extends StatefulWidget {
+  const MyHomePage({super.key, required this.title});
+
+  // This widget is the home page of your application. It is stateful, meaning
+  // that it has a State object (defined below) that contains fields that affect
+  // how it looks.
+
+  // This class is the configuration for the state. It holds the values (in this
+  // case the title) provided by the parent (in this case the App widget) and
+  // used by the build method of the State. Fields in a Widget subclass are
+  // always marked "final".
+
+  final String title;
 
   @override
-  State<RootShell> createState() => _RootShellState();
+  State<MyHomePage> createState() => _MyHomePageState();
 }
 
-class _RootShellState extends State<RootShell> {
-  int _index = 0;
+class _MyHomePageState extends State<MyHomePage> {
+  int _counter = 0;
 
-  final _pages = const [
-    HomeScreen(),
-    ProgramsScreen(),
-    Placeholder(),
-    Placeholder(),
-    Placeholder(),
-  ];
+  void _incrementCounter() {
+    setState(() {
+      // This call to setState tells the Flutter framework that something has
+      // changed in this State, which causes it to rerun the build method below
+      // so that the display can reflect the updated values. If we changed
+      // _counter without calling setState(), then the build method would not be
+      // called again, and so nothing would appear to happen.
+      _counter++;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    // This method is rerun every time setState is called, for instance as done
+    // by the _incrementCounter method above.
+    //
+    // The Flutter framework has been optimized to make rerunning build methods
+    // fast, so that you can just rebuild anything that needs updating rather
+    // than having to individually change instances of widgets.
     return Scaffold(
-      body: _pages[_index],
-      bottomNavigationBar: AppBottomNav(
-        currentIndex: _index,
-        onChanged: (i) => setState(() => _index = i),
+      appBar: AppBar(
+        // TRY THIS: Try changing the color here to a specific color (to
+        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
+        // change color while the other colors stay the same.
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        // Here we take the value from the MyHomePage object that was created by
+        // the App.build method, and use it to set our appbar title.
+        title: Text(widget.title),
       ),
-    );
-  }
-}
-
-class AppBottomNav extends StatelessWidget {
-  final int currentIndex;
-  final ValueChanged<int> onChanged;
-
-  const AppBottomNav({
-    super.key,
-    required this.currentIndex,
-    required this.onChanged,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return SafeArea(
-      top: false,
-      child: Container(
-        height: 72,
-        padding: const EdgeInsets.symmetric(horizontal: 14),
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          boxShadow: [
-            BoxShadow(
-              blurRadius: 30,
-              offset: Offset(0, -10),
-              color: Color(0x14000000),
-            ),
-          ],
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            _NavItem(
-              icon: Icons.home_rounded,
-              label: "Home",
-              selected: currentIndex == 0,
-              onTap: () => onChanged(0),
-            ),
-            _NavItem(
-              icon: Icons.grid_view_rounded,
-              label: "Course",
-              selected: currentIndex == 1,
-              onTap: () => onChanged(1),
-            ),
-            _NavCenterItem(
-              selected: currentIndex == 2,
-              onTap: () => onChanged(2),
-            ),
-            _NavItem(
-              icon: Icons.chat_bubble_outline_rounded,
-              label: "Message",
-              selected: currentIndex == 3,
-              onTap: () => onChanged(3),
-            ),
-            _NavItem(
-              icon: Icons.person_outline_rounded,
-              label: "Account",
-              selected: currentIndex == 4,
-              onTap: () => onChanged(4),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _NavItem extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final bool selected;
-  final VoidCallback onTap;
-
-  const _NavItem({
-    required this.icon,
-    required this.label,
-    required this.selected,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final color = selected ? const Color(0xFF2D5BFF) : const Color(0xFFB8C0D0);
-
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(16),
-      child: SizedBox(
-        width: 64,
+      body: Center(
+        // Center is a layout widget. It takes a single child and positions it
+        // in the middle of the parent.
         child: Column(
+          // Column is also a layout widget. It takes a list of children and
+          // arranges them vertically. By default, it sizes itself to fit its
+          // children horizontally, and tries to be as tall as its parent.
+          //
+          // Column has various properties to control how it sizes itself and
+          // how it positions its children. Here we use mainAxisAlignment to
+          // center the children vertically; the main axis here is the vertical
+          // axis because Columns are vertical (the cross axis would be
+          // horizontal).
+          //
+          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
+          // action in the IDE, or press "p" in the console), to see the
+          // wireframe for each widget.
           mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(icon, size: 24, color: color),
-            const SizedBox(height: 4),
+          children: <Widget>[
+            const Text(
+              'You have pushed the button this many times:',
+            ),
             Text(
-              label,
-              style: TextStyle(
-                fontSize: 11,
-                fontWeight: FontWeight.w600,
-                color: color,
-              ),
+              '$_counter',
+              style: Theme.of(context).textTheme.headlineMedium,
             ),
           ],
         ),
       ),
-    );
-  }
-}
-
-class _NavCenterItem extends StatelessWidget {
-  final bool selected;
-  final VoidCallback onTap;
-
-  const _NavCenterItem({
-    required this.selected,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: 56,
-        height: 56,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          shape: BoxShape.circle,
-          boxShadow: const [
-            BoxShadow(
-              blurRadius: 30,
-              offset: Offset(0, 12),
-              color: Color(0x22000000),
-            ),
-          ],
-        ),
-        child: Center(
-          child: Container(
-            width: 44,
-            height: 44,
-            decoration: const BoxDecoration(
-              color: Color(0xFF2D5BFF),
-              shape: BoxShape.circle,
-            ),
-            child: const Icon(Icons.search_rounded, color: Colors.white),
-          ),
-        ),
-      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _incrementCounter,
+        tooltip: 'Increment',
+        child: const Icon(Icons.add),
+      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
