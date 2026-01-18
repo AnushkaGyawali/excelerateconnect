@@ -127,6 +127,7 @@ class _ProgramsScreenState extends State<ProgramsScreen> {
                   return ProgramCard(
                     program: item,
                     onTap: () {
+                      /// This is the correct way to navigate and pass data
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -157,35 +158,36 @@ class _MiniBanner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 72,
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: const Color(0xFFDCEFFF),
-        borderRadius: BorderRadius.circular(18),
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: Text(
-              title,
-              style: const TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w900,
-                color: AppTheme.primary,
+        height: 72,
+        padding: const EdgeInsets.all(14),
+        decoration: BoxDecoration(
+          color: const Color(0xFFDCEFFF),
+          borderRadius: BorderRadius.circular(18),
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: Text(
+                title,
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w900,
+                  color: AppTheme.primary,
+                ),
               ),
             ),
-          ),
-          Container(
-            width: 44,
-            height: 44,
-            decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.7),
-              borderRadius: BorderRadius.circular(16),
-            ),
-            child: Icon(icon, color: AppTheme.primary),
-          )
-        ],
-      ),
+            Container(
+              width: 44,
+              height: 44,
+              decoration: BoxDecoration(
+                /// Fixed the color with opacity logic
+                color: Colors.white.withOpacity(0.7),
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Icon(icon, color: AppTheme.primary),
+            )
+          ],
+        )
     );
   }
 }

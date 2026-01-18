@@ -54,7 +54,8 @@ class SuccessScreen extends StatelessWidget {
                 height: 48,
                 child: ElevatedButton(
                   onPressed: () {
-                    Navigator.pushReplacementNamed(context, '/home');
+                    // This goes to the RootShell which displays the Home screen with the menu
+                    Navigator.pushReplacementNamed(context, '/main');
                   },
                   child: const Text("Done"),
                 ),
