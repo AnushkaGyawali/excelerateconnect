@@ -66,7 +66,7 @@ class SectionTitle extends StatelessWidget {
           ),
         ),
         const Spacer(),
-        Text(
+        const Text(
           "See all",
           style: TextStyle(
             fontSize: 12,
@@ -103,9 +103,9 @@ class HomeScreen extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      Column(
+                      const Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        children: const [
+                        children: [
                           Text(
                             "Hi, Aabid",
                             style: TextStyle(
@@ -148,8 +148,8 @@ class HomeScreen extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Row(
-                          children: const [
+                        const Row(
+                          children: [
                             Text(
                               "Learned today",
                               style: TextStyle(
@@ -170,9 +170,9 @@ class HomeScreen extends StatelessWidget {
                           ],
                         ),
                         const SizedBox(height: 6),
-                        Row(
+                        const Row(
                           crossAxisAlignment: CrossAxisAlignment.end,
-                          children: const [
+                          children: [
                             Text(
                               "46min",
                               style: TextStyle(
@@ -198,11 +198,11 @@ class HomeScreen extends StatelessWidget {
                         const SizedBox(height: 10),
                         ClipRRect(
                           borderRadius: BorderRadius.circular(999),
-                          child: LinearProgressIndicator(
+                          child: const LinearProgressIndicator(
                             value: 46 / 60,
                             minHeight: 7,
-                            backgroundColor: const Color(0xFFEFEFEF),
-                            valueColor: const AlwaysStoppedAnimation(
+                            backgroundColor: Color(0xFFEFEFEF),
+                            valueColor: AlwaysStoppedAnimation(
                               Color(0xFFFC7B5A),
                             ),
                           ),
@@ -219,7 +219,7 @@ class HomeScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SectionTitle(title: "Latest News"),
+                  const SectionTitle(title: "Latest News"),
                   const SizedBox(height: 12),
                   Container(
                     height: 120,
@@ -269,11 +269,11 @@ class HomeScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 18),
-                  SectionTitle(title: "Learning Plan"),
+                  const SectionTitle(title: "Learning Plan"),
                   const SizedBox(height: 12),
-                  _PlanTile(title: "App Development", progress: "40/48"),
+                  const _PlanTile(title: "App Development", progress: "40/48"),
                   const SizedBox(height: 10),
-                  _PlanTile(title: "Web Development", progress: "6/24"),
+                  const _PlanTile(title: "Web Development", progress: "6/24"),
                   const SizedBox(height: 18),
                   Container(
                     width: double.infinity,
@@ -282,9 +282,9 @@ class HomeScreen extends StatelessWidget {
                       color: const Color(0xFFE9E0FF),
                       borderRadius: BorderRadius.circular(18),
                     ),
-                    child: Column(
+                    child: const Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: const [
+                      children: [
                         Text(
                           "Meetup",
                           style: TextStyle(

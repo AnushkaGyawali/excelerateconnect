@@ -78,7 +78,7 @@ class _ProgramsScreenState extends State<ProgramsScreen> {
             const SizedBox(height: 14),
             const SearchField(hint: "Find Course"),
             const SizedBox(height: 14),
-            Row(
+            const Row(
               children: [
                 Expanded(
                   child: _MiniBanner(
@@ -86,7 +86,7 @@ class _ProgramsScreenState extends State<ProgramsScreen> {
                     icon: Icons.code_rounded,
                   ),
                 ),
-                const SizedBox(width: 12),
+                SizedBox(width: 12),
                 Expanded(
                   child: _MiniBanner(
                     title: "App Dev",
