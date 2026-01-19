@@ -1,5 +1,18 @@
 import 'package:flutter/material.dart';
 
+/// Import shared theme and models
+import 'theme/app_theme.dart';
+
+/// Authentication screen imports (Anushka)
+import 'screens/login/login_screen.dart';
+import 'screens/login/signup_screen.dart';
+import 'screens/login/success_screen.dart';
+
+/// UI screen imports (Aabid)
+import 'screens/home/home_screen.dart';
+import 'screens/programs_screen.dart';
+import 'screens/program_details_screen.dart';
+
 void main() {
   runApp(const MyApp());
 }
@@ -7,119 +20,170 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Excelerate Connect',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      home: const MyHomePage(title: 'Excelerate Connect'),
+      debugShowCheckedModeBanner: false,
+
+      /// UI Theme Configuration
+      /// Using Aabid's predefined lightTheme for consistency
+      theme: AppTheme.lightTheme,
+
+      /// Entry Point
+      home: const LoginScreen(),
+
+      /// Named Navigation Routes
+      routes: {
+        '/login': (context) => const LoginScreen(),
+        '/signup': (context) => const SignUpScreen(),
+        '/success': (context) => const SuccessScreen(),
+
+        // This is now the main entry point for the "Logged In" state
+        '/main': (context) => const RootShell(),
+
+        // Sub-routes for specific pages
+        '/home': (context) => const HomeScreen(),
+        '/programs': (context) => const ProgramsScreen(),
+
+        // FIXED: '/program_details' was removed from here because it requires
+        // a 'program' parameter that cannot be provided in a static routes map.
+      },
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+// --- Aabid's Navigation Structure Integrated Below ---
 
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
+/// [RootShell] acts as the "Master Frame" with the Bottom Navigation Bar.
+/// It stays active while the user switches between Home, Courses, and Profile.
+class RootShell extends StatefulWidget {
+  const RootShell({super.key});
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<RootShell> createState() => _RootShellState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+class _RootShellState extends State<RootShell> {
+  int _index = 0;
 
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
+  // These are the screens reachable via the Bottom Nav
+  final _pages = const [
+    HomeScreen(),
+    ProgramsScreen(),
+    Placeholder(), // Search/Center Item
+    Placeholder(), // Message
+    Placeholder(), // Account
+  ];
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
     return Scaffold(
-      appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
+      body: _pages[_index],
+      bottomNavigationBar: AppBottomNav(
+        currentIndex: _index,
+        onChanged: (i) => setState(() => _index = i),
       ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
+    );
+  }
+}
+
+/// Custom Bottom Navigation Bar from Aabid's UI Branch
+class AppBottomNav extends StatelessWidget {
+  final int currentIndex;
+  final ValueChanged<int> onChanged;
+
+  const AppBottomNav({
+    super.key,
+    required this.currentIndex,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      top: false,
+      child: Container(
+        height: 72,
+        padding: const EdgeInsets.symmetric(horizontal: 14),
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+              blurRadius: 30,
+              offset: Offset(0, -10),
+              color: Color(0x14000000),
             ),
           ],
         ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            _NavItem(icon: Icons.home_rounded, label: "Home", selected: currentIndex == 0, onTap: () => onChanged(0)),
+            _NavItem(icon: Icons.grid_view_rounded, label: "Course", selected: currentIndex == 1, onTap: () => onChanged(1)),
+            _NavCenterItem(selected: currentIndex == 2, onTap: () => onChanged(2)),
+            _NavItem(icon: Icons.chat_bubble_outline_rounded, label: "Message", selected: currentIndex == 3, onTap: () => onChanged(3)),
+            _NavItem(icon: Icons.person_outline_rounded, label: "Account", selected: currentIndex == 4, onTap: () => onChanged(4)),
+          ],
+        ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+    );
+  }
+}
+
+/// Individual Nav Item (Internal to main.dart)
+class _NavItem extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
+
+  const _NavItem({required this.icon, required this.label, required this.selected, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    final color = selected ? const Color(0xFF2D5BFF) : const Color(0xFFB8C0D0);
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(16),
+      child: SizedBox(
+        width: 64,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, size: 24, color: color),
+            const SizedBox(height: 4),
+            Text(label, style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: color)),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Center "Search" Item in the Bottom Nav
+class _NavCenterItem extends StatelessWidget {
+  final bool selected;
+  final VoidCallback onTap;
+  const _NavCenterItem({required this.selected, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: 56, height: 56,
+        decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle, boxShadow: [
+          BoxShadow(blurRadius: 30, offset: Offset(0, 12), color: Color(0x22000000)),
+        ]),
+        child: Center(
+          child: Container(
+            width: 44, height: 44,
+            decoration: const BoxDecoration(color: Color(0xFF2D5BFF), shape: BoxShape.circle),
+            child: const Icon(Icons.search_rounded, color: Colors.white),
+          ),
+        ),
+      ),
     );
   }
 }
