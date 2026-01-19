@@ -25,12 +25,6 @@ class HomeScreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // SectionTitle(
-                    //   title: "Latest News",
-                    //   onSeeAll: () {
-                    //     _onSeeAllNewsPressed(context);
-                    //   },
-                    // ),
                     const SizedBox(height: 12),
 
                     /// Horizontal News Slider
@@ -195,7 +189,7 @@ class HomeScreen extends StatelessWidget {
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content: Text('Opening Meetup Details'),
-        duration: Duration(seconds: 1),
+        duration: const Duration(seconds: 1),
       ),
     );
     // Add your navigation logic here
@@ -501,7 +495,7 @@ class _NewsBanner extends StatelessWidget {
   }
 }
 
-/// A Meetup information card.
+/// A Meetup information card with downloaded icon.
 class _MeetupBanner extends StatelessWidget {
   final VoidCallback onTap;
 
@@ -520,24 +514,54 @@ class _MeetupBanner extends StatelessWidget {
             color: const Color(0xFFE9E0FF),
             borderRadius: BorderRadius.circular(18),
           ),
-          child: const Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          child: Row(
             children: [
-              Text(
-                "Meetup",
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w900,
-                  color: AppTheme.textDark,
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      "Meetup",
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.w900,
+                        color: const Color(0xFFE42929),
+                      ),
+                    ),
+                    const SizedBox(height: 15),
+                    const Text(
+                      "Off-line exchange of learning experience",
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w700,
+                        color: const Color(0xFF440687),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              SizedBox(height: 6),
-              Text(
-                "Off-line exchange of learning experience",
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w700,
-                  color: AppTheme.textSoft,
+              const SizedBox(width: 12),
+              Container(
+                width: 60,
+                height: 60,
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.6),
+                  borderRadius: BorderRadius.circular(14),
+                ),
+                child: Center(
+                  child: Image.asset(
+                    '/icons/meetup-icon.png',
+                    width: 32,
+                    height: 32,
+                    color: AppTheme.primary,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Icon(
+                        Icons.group,
+                        size: 32,
+                        color: AppTheme.primary,
+                      );
+                    },
+                  ),
                 ),
               ),
             ],
