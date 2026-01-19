@@ -14,35 +14,37 @@ Excelerate Connect aims to improve accessibility, engagement, and communication 
 
 ## 🎯 Objectives
 
-- Centralize Excelerate program information in one mobile platform  
-- Deliver real-time announcements through a dynamic dashboard  
-- Improve user engagement via a mobile-optimized interface  
-- Establish a structured feedback mechanism  
+- Centralize Excelerate program information in one mobile platform
+- Deliver real-time announcements through a dynamic dashboard
+- Improve user engagement via a mobile-optimized interface
+- Establish a structured feedback mechanism
 
 ---
 
 ## 🔍 Features (Planned Scope)
 
 ### In-Scope
-- Secure user authentication and onboarding  
-- Dynamic dashboard for announcements and updates  
-- Searchable and filterable program catalog  
-- Program and learning module previews  
-- Feedback submission interface  
+
+- Secure user authentication and onboarding
+- Dynamic dashboard for announcements and updates
+- Searchable and filterable program catalog
+- Program and learning module previews
+- Feedback submission interface
 
 ### Out-of-Scope (Future Enhancements)
-- In-app video conferencing  
-- Real-time peer-to-peer chat  
-- Payment gateway integration  
+
+- In-app video conferencing
+- Real-time peer-to-peer chat
+- Payment gateway integration
 
 ---
 
 ## 🛠️ Technology Stack
 
-- **Frontend Framework:** Flutter (Dart)  
-- **State Management:** Provider / Riverpod  
-- **UI/UX Design:** Figma  
-- **Version Control:** Git & GitHub  
+- **Frontend Framework:** Flutter (Dart)
+- **State Management:** Provider / Riverpod
+- **UI/UX Design:** Figma
+- **Version Control:** Git & GitHub
 
 ---
 
@@ -56,6 +58,48 @@ The project follows an iterative and modular development approach aligned with I
 
 🚧 **In Development**  
 This repository currently contains the initial project setup and documentation. Features will be implemented incrementally during the internship period.
+
+---
+
+## 📸 Screenshots
+
+<table>
+  <tr>
+  <td align="center">
+      <img src="/assets/screenshots/signup.png" width="250"/>
+      <br/>
+      <b>Sign up Screen</b>
+    </td>
+    <td align="center">
+      <img src="/assets/screenshots/login.png" width="250"/>
+      <br/>
+      <b>Login Screen</b>
+    </td>
+    <td align="center">
+      <img src="/assets/screenshots/registration.png" width="250"/>
+      <br/>
+      <b> Login Registration</b>
+    </td>
+    <td align="center">
+      <img src="/assets/screenshots/homepage.png" width="250"/>
+      <br/>
+      <b>Dashboard</b>
+    </td>
+  </tr>
+
+  <tr>
+    <td align="center">
+      <img src="/assets/screenshots/programs.png" width="250"/>
+      <br/>
+      <b>Program Catalog</b>
+    </td>
+    <td align="center">
+      <img src="/assets/screenshots/program_details.png" width="250"/>
+      <br/>
+      <b>Program Details</b>
+    </td>
+  </tr>
+</table>
 
 ---
 
