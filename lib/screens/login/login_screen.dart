@@ -1,4 +1,6 @@
+// lib/screens/login/login_screen.dart
 import 'package:flutter/material.dart';
+import '../../theme/app_theme.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -6,80 +8,96 @@ class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppTheme.bg,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(24),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              // Logo/Title
+              const SizedBox(height: 40),
               const Text(
-                "Log In",
+                'Excelerate Connect',
                 style: TextStyle(
                   fontSize: 28,
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.w900,
+                  color: AppTheme.primary,
                 ),
               ),
-              const SizedBox(height: 32),
-
-              const Text("Your Email"),
-              const SizedBox(height: 6),
+              const SizedBox(height: 8),
+              const Text(
+                'Welcome back!',
+                style: TextStyle(
+                  fontSize: 16,
+                  color: AppTheme.textSoft,
+                ),
+              ),
+              const SizedBox(height: 60),
+              
+              // Email Field
               TextField(
                 decoration: InputDecoration(
-                  hintText: "username@gmail.com",
+                  labelText: 'Email',
+                  prefixIcon: const Icon(Icons.email),
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(12),
                   ),
                 ),
               ),
-
               const SizedBox(height: 20),
-              const Text("Password"),
-              const SizedBox(height: 6),
+              
+              // Password Field
               TextField(
                 obscureText: true,
                 decoration: InputDecoration(
-                  suffixIcon: const Icon(Icons.visibility_off),
+                  labelText: 'Password',
+                  prefixIcon: const Icon(Icons.lock),
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(12),
                   ),
                 ),
               ),
-
-              Align(
-                alignment: Alignment.centerRight,
-                child: TextButton(
-                  onPressed: () {},
-                  child: const Text("Forget password?"),
-                ),
-              ),
-
-              const SizedBox(height: 10),
+              const SizedBox(height: 30),
+              
+              // Login Button
               SizedBox(
                 width: double.infinity,
-                height: 50,
+                height: 56,
                 child: ElevatedButton(
                   onPressed: () {
-                    Navigator.pushNamed(context, '/success');
+                    Navigator.pushNamedAndRemoveUntil(
+                      context,
+                      '/main',
+                      (route) => false,
+                    );
                   },
-                  child: const Text("Log In"),
-                ),
-              ),
-
-              const Spacer(),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text("Don’t have an account? "),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.pushNamed(context, '/signup');
-                    },
-                    child: const Text(
-                      "Sign up",
-                      style: TextStyle(color: Color(0xFF4361EE)),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppTheme.primary,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
                     ),
                   ),
-                ],
+                  child: const Text(
+                    'Login',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w900,
+                    ),
+                  ),
+                ),
+              ),
+              
+              // Sign Up Link
+              const SizedBox(height: 20),
+              TextButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, '/signup');
+                },
+                child: const Text(
+                  "Don't have an account? Sign Up",
+                  style: TextStyle(color: AppTheme.primary),
+                ),
               ),
             ],
           ),

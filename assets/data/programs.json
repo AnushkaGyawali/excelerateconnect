@@ -1,0 +1,24 @@
+[
+  {
+    "id": "1",
+    "title": "Data Science Fundamentals",
+    "provider": "Excelerate",
+    "duration": "18 hours",
+    "category": "Popular",
+    "description": "Learn data analysis, visualization, and machine learning basics.",
+    "rating": 4.8,
+    "enrolled": 1250,
+    "price": "$99.99"
+  },
+  {
+    "id": "2",
+    "title": "Flutter App Development",
+    "provider": "Excelerate",
+    "duration": "24 hours",
+    "category": "Popular",
+    "description": "Build cross-platform mobile apps with Flutter and Dart.",
+    "rating": 4.9,
+    "enrolled": 890,
+    "price": "$129.99"
+  }
+]
