@@ -1,0 +1,15 @@
+[
+  {
+    "title": "Flutter Bootcamp",
+    "provider": "Excelerate",
+    "duration": "6 weeks",
+    "category": "Mobile Development"
+  },
+  {
+    "title": "Backend Development",
+    "provider": "Excelerate",
+    "duration": "8 weeks",
+    "category": "Web Development"
+  }
+]
+

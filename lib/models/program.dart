@@ -10,4 +10,12 @@ class Program {
     required this.duration,
     required this.category,
   });
+   factory Program.fromJson(Map<String, dynamic> json) {
+      return Program(
+        title: json['title'],
+        provider: json['provider'],
+        duration: json['duration'],
+        category: json['category'],
+      );
+      }
 }
