@@ -1,5 +1,7 @@
+// lib/screens/programs_screen.dart
 import 'package:flutter/material.dart';
 import '../models/program.dart';
+import '../services/program_service.dart';
 import '../theme/app_theme.dart';
 import '../widgets/category_chip.dart';
 import '../widgets/program_card.dart';
@@ -15,29 +17,37 @@ class ProgramsScreen extends StatefulWidget {
 
 class _ProgramsScreenState extends State<ProgramsScreen> {
   int selectedIndex = 0;
+  List<Program> programs = [];
+  bool isLoading = true;
+  String? errorMessage;
 
   final categories = const ["All", "Popular", "New"];
 
-  final programs = const [
-    Program(
-      title: "Data Science",
-      provider: "Excelerate",
-      duration: "18 hours",
-      category: "Popular",
-    ),
-    Program(
-      title: "App Development",
-      provider: "Excelerate",
-      duration: "18 hours",
-      category: "All",
-    ),
-    Program(
-      title: "Web Design",
-      provider: "Excelerate",
-      duration: "14 hours",
-      category: "New",
-    ),
-  ];
+  @override
+  void initState() {
+    super.initState();
+    _loadPrograms();
+  }
+
+  Future<void> _loadPrograms() async {
+    setState(() {
+      isLoading = true;
+      errorMessage = null;
+    });
+
+    try {
+      final fetchedPrograms = await ProgramService.getProgramsFromJson();
+      setState(() {
+        programs = fetchedPrograms;
+        isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        errorMessage = 'Failed to load programs. Please try again.';
+        isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -64,6 +74,12 @@ class _ProgramsScreenState extends State<ProgramsScreen> {
                   ),
                 ),
                 const Spacer(),
+                // Add refresh button
+                IconButton(
+                  onPressed: _loadPrograms,
+                  icon: const Icon(Icons.refresh, color: AppTheme.primary),
+                  tooltip: 'Refresh programs',
+                ),
                 Container(
                   width: 42,
                   height: 42,
@@ -97,7 +113,7 @@ class _ProgramsScreenState extends State<ProgramsScreen> {
             ),
             const SizedBox(height: 18),
             const Text(
-              "Choice your course",
+              "Choose your course",
               style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w800,
@@ -119,26 +135,77 @@ class _ProgramsScreenState extends State<ProgramsScreen> {
               ),
             ),
             const SizedBox(height: 14),
-            Expanded(
-              child: ListView.builder(
-                itemCount: filtered.length,
-                itemBuilder: (_, i) {
-                  final item = filtered[i];
-                  return ProgramCard(
-                    program: item,
-                    onTap: () {
-                      /// This is the correct way to navigate and pass data
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => ProgramDetailsScreen(program: item),
+
+            // Loading and Error States
+            if (isLoading)
+              const Expanded(
+                child: Center(
+                  child: CircularProgressIndicator(
+                    color: AppTheme.primary,
+                  ),
+                ),
+              )
+            else if (errorMessage != null)
+              Expanded(
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(Icons.error_outline,
+                          size: 48, color: Colors.red),
+                      const SizedBox(height: 16),
+                      Text(
+                        errorMessage!,
+                        style: const TextStyle(
+                          color: Colors.red,
+                          fontSize: 16,
                         ),
-                      );
-                    },
-                  );
-                },
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 16),
+                      ElevatedButton(
+                        onPressed: _loadPrograms,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppTheme.primary,
+                        ),
+                        child: const Text('Retry'),
+                      ),
+                    ],
+                  ),
+                ),
+              )
+            else if (filtered.isEmpty)
+              const Expanded(
+                child: Center(
+                  child: Text(
+                    'No programs available',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: AppTheme.textSoft,
+                    ),
+                  ),
+                ),
+              )
+            else
+              Expanded(
+                child: ListView.builder(
+                  itemCount: filtered.length,
+                  itemBuilder: (_, i) {
+                    final item = filtered[i];
+                    return ProgramCard(
+                      program: item,
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => ProgramDetailsScreen(program: item),
+                          ),
+                        );
+                      },
+                    );
+                  },
+                ),
               ),
-            ),
           ],
         ),
       ),
@@ -180,14 +247,12 @@ class _MiniBanner extends StatelessWidget {
               width: 44,
               height: 44,
               decoration: BoxDecoration(
-                /// Fixed the color with opacity logic
                 color: Colors.white.withOpacity(0.7),
                 borderRadius: BorderRadius.circular(16),
               ),
               child: Icon(icon, color: AppTheme.primary),
             )
           ],
-        )
-    );
+        ));
   }
 }

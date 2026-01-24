@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import '../../theme/app_theme.dart'; // Import the shared theme
 
+// Import ProfileScreen
+import 'package:excelerateconnect/main.dart';
+
 /// [HomeScreen] serves as the main dashboard for the user after a successful login.
 /// It displays the user's progress, news, and learning plans.
 class HomeScreen extends StatelessWidget {
@@ -189,7 +192,7 @@ class HomeScreen extends StatelessWidget {
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content: Text('Opening Meetup Details'),
-        duration: const Duration(seconds: 1),
+        duration: Duration(seconds: 1),
       ),
     );
     // Add your navigation logic here
@@ -240,13 +243,14 @@ class _HomeHeader extends StatelessWidget {
                 ],
               ),
               const Spacer(),
-              // User Profile Icon with tap functionality
+              // UPDATED: User Profile Icon with navigation to Profile Screen
               GestureDetector(
                 onTap: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Opening Profile'),
-                      duration: Duration(seconds: 1),
+                  // Navigate to Profile Screen
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const ProfileScreen(),
                     ),
                   );
                 },
@@ -525,7 +529,7 @@ class _MeetupBanner extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.w900,
-                        color: const Color(0xFFE42929),
+                        color: Color(0xFFE42929),
                       ),
                     ),
                     const SizedBox(height: 15),
@@ -534,7 +538,7 @@ class _MeetupBanner extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w700,
-                        color: const Color(0xFF440687),
+                        color: Color(0xFF440687),
                       ),
                     ),
                   ],
