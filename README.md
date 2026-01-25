@@ -62,6 +62,8 @@ This repository currently contains the initial project setup and documentation. 
 🚧 **Week 3 Progress:**
 - Core UI flows completed: Authentication (Sign Up, Login, Registration)
 - Dashboard and Program Catalog implemented
+- Program Catalog & Details screens currently use sample JSON data**
+- Registration & Login forms are functional with basic validation**
 - Screenshots added to README
 
 ---
@@ -102,6 +104,24 @@ This repository currently contains the initial project setup and documentation. 
       <img src="/assets/screenshots/program_details.png" width="250"/>
       <br/>
       <b>Program Details</b>
+    </td>
+  </tr>
+
+ <tr>
+    <td align="center">
+      <img src="/assets/screenshots/registration%20and%20payment.png" width="250"/>
+      <br/>
+      <b>Registration and Payment Form</b>
+    </td>
+    <td align="center">
+      <img src="/assets/screenshots/Enrollment_message.png" width="250"/>
+      <br/>
+      <b>Enrollment Message</b>
+    </td>
+ <td align="center">
+      <img src="/assets/screenshots/myprogram.png" width="250"/>
+      <br/>
+      <b>Program</b>
     </td>
   </tr>
 </table>
