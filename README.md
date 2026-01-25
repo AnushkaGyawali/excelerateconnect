@@ -59,6 +59,11 @@ The project follows an iterative and modular development approach aligned with I
 🚧 **In Development**  
 This repository currently contains the initial project setup and documentation. Features will be implemented incrementally during the internship period.
 
+🚧 **Week 3 Progress:**
+- Core UI flows completed: Authentication (Sign Up, Login, Registration)
+- Dashboard and Program Catalog implemented
+- Screenshots added to README
+
 ---
 
 ## 📸 Screenshots
