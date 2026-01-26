@@ -74,12 +74,12 @@ This repository currently contains the initial project setup and documentation. 
 <table>
   <tr>
   <td align="center">
-      <img src="/assets/screenshots/signup.png" width="250"/>
+      <img src="/assets/screenshots/signup-page.png" width="250"/>
       <br/>
       <b>Sign up Screen</b>
     </td>
     <td align="center">
-      <img src="/assets/screenshots/login.png" width="250"/>
+      <img src="/assets/screenshots/login-page.png" width="250"/>
       <br/>
       <b>Login Screen</b>
     </td>
