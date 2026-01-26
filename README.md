@@ -106,10 +106,7 @@ This repository currently contains the initial project setup and documentation. 
       <br/>
       <b>Program Details</b>
     </td>
-  </tr>
-
- <tr>
-    <td align="center">
+        <td align="center">
       <img src="/assets/screenshots/registration-form.png" width="250"/>
       <br/>
       <b>Registration and Payment Form</b>
@@ -119,6 +116,9 @@ This repository currently contains the initial project setup and documentation. 
       <br/>
       <b>Registration and Payment Form</b>
     </td>
+  </tr>
+
+ <tr>
     <td align="center">
       <img src="/assets/screenshots/Enrollment_message.png" width="250"/>
       <br/>
