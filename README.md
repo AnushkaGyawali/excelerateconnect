@@ -60,10 +60,11 @@ The project follows an iterative and modular development approach aligned with I
 This repository currently contains the initial project setup and documentation. Features will be implemented incrementally during the internship period.
 
 🚧 **Week 3 Progress:**
+
 - Core UI flows completed: Authentication (Sign Up, Login, Registration)
 - Dashboard and Program Catalog implemented
-- Program Catalog & Details screens currently use sample JSON data**
-- Registration & Login forms are functional with basic validation**
+- Program Catalog & Details screens currently use sample JSON data\*\*
+- Registration & Login forms are functional with basic validation\*\*
 - Screenshots added to README
 
 ---
@@ -109,7 +110,12 @@ This repository currently contains the initial project setup and documentation. 
 
  <tr>
     <td align="center">
-      <img src="/assets/screenshots/registration%20and%20payment.png" width="250"/>
+      <img src="/assets/screenshots/registration-form.png" width="250"/>
+      <br/>
+      <b>Registration and Payment Form</b>
+    </td>
+       <td align="center">
+      <img src="/assets/screenshots/registration-form1.png" width="250"/>
       <br/>
       <b>Registration and Payment Form</b>
     </td>
