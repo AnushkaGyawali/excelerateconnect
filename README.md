@@ -101,6 +101,11 @@ This repository currently contains the initial project setup and documentation. 
       <br/>
       <b>Program Catalog</b>
     </td>
+     <td align="center">
+      <img src="/assets/screenshots/search-screen.png" width="250"/>
+      <br/>
+      <b>search screen</b>
+    </td>
     <td align="center">
       <img src="/assets/screenshots/program_details.png" width="250"/>
       <br/>
@@ -124,12 +129,22 @@ This repository currently contains the initial project setup and documentation. 
       <br/>
       <b>Enrollment Message</b>
     </td>
- <td align="center">
+    <td align="center">
       <img src="/assets/screenshots/myprogram.png" width="250"/>
       <br/>
       <b>My Enrolled Program</b>
     </td>
-  </tr>
+    <td align="center">
+      <img src="/assets/screenshots/message-screen.png" width="250"/>
+      <br/>
+      <b>Message Screen</b>
+    </td>
+    <td align="center">
+      <img src="/assets/screenshots/profile-screen.png" width="250"/>
+      <br/>
+      <b>My Profile Screen</b>
+    </td>
+  </tr>>
 </table>
 
 ---
