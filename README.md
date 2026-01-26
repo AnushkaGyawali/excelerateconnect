@@ -127,7 +127,7 @@ This repository currently contains the initial project setup and documentation. 
  <td align="center">
       <img src="/assets/screenshots/myprogram.png" width="250"/>
       <br/>
-      <b>Program</b>
+      <b>My Enrolled Program</b>
     </td>
   </tr>
 </table>
