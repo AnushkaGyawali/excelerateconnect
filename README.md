@@ -93,14 +93,14 @@ This repository currently contains the initial project setup and documentation. 
       <br/>
       <b>Dashboard</b>
     </td>
-  </tr>
-
-  <tr>
-    <td align="center">
+     <td align="center">
       <img src="/assets/screenshots/programs.png" width="250"/>
       <br/>
       <b>Program Catalog</b>
     </td>
+  </tr>
+
+  <tr>
      <td align="center">
       <img src="/assets/screenshots/search-screen.png" width="250"/>
       <br/>
@@ -121,14 +121,14 @@ This repository currently contains the initial project setup and documentation. 
       <br/>
       <b>Registration and Payment Form</b>
     </td>
-  </tr>
-
- <tr>
-    <td align="center">
+     <td align="center">
       <img src="/assets/screenshots/Enrollment_message.png" width="250"/>
       <br/>
       <b>Enrollment Message</b>
     </td>
+  </tr>
+
+ <tr>
     <td align="center">
       <img src="/assets/screenshots/myprogram.png" width="250"/>
       <br/>
