@@ -20,14 +20,26 @@ class _RegistrationFormState extends State<RegistrationForm> {
   final _lastNameController = TextEditingController();
   final _emailController = TextEditingController();
   final _phoneController = TextEditingController();
-  final _passwordController = TextEditingController();
-  final _confirmPasswordController = TextEditingController();
+  final _addressController = TextEditingController();
+  final _cityController = TextEditingController();
+  final _stateController = TextEditingController();
+  final _zipController = TextEditingController();
 
   bool _isLoading = false;
-  bool _obscurePassword = true;
-  bool _obscureConfirmPassword = true;
   bool _agreeToTerms = false;
+  bool _receiveUpdates = true;
   String _selectedPaymentMethod = 'card';
+  String? _selectedEducationLevel;
+
+  // Education level options
+  final List<String> _educationLevels = [
+    'High School',
+    'Associate Degree',
+    'Bachelor\'s Degree',
+    'Master\'s Degree',
+    'Doctorate',
+    'Other'
+  ];
 
   String? _validateName(String? value) {
     if (value == null || value.trim().isEmpty) {
@@ -62,29 +74,6 @@ class _RegistrationFormState extends State<RegistrationForm> {
     return null;
   }
 
-  String? _validatePassword(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Password is required';
-    }
-    if (value.length < 6) {
-      return 'Password must be at least 6 characters';
-    }
-    if (!value.contains(RegExp(r'[A-Z]'))) {
-      return 'Include at least one uppercase letter';
-    }
-    if (!value.contains(RegExp(r'[0-9]'))) {
-      return 'Include at least one number';
-    }
-    return null;
-  }
-
-  String? _validateConfirmPassword(String? value) {
-    if (value != _passwordController.text) {
-      return 'Passwords do not match';
-    }
-    return null;
-  }
-
   Future<void> _submitForm() async {
     if (!_formKey.currentState!.validate()) {
       return;
@@ -114,7 +103,6 @@ class _RegistrationFormState extends State<RegistrationForm> {
     _showSuccessModal();
   }
 
-  // UPDATED _showSuccessModal method
   void _showSuccessModal() {
     showDialog(
       context: context,
@@ -122,11 +110,8 @@ class _RegistrationFormState extends State<RegistrationForm> {
       builder: (context) => SuccessModal(
         programTitle: widget.program.title,
         onStartLearning: () {
-          // Close the modal and registration form
           Navigator.pop(context); // Close modal
           Navigator.pop(context); // Close registration form
-
-          // Navigate to My Programs screen
           Navigator.push(
             context,
             MaterialPageRoute(
@@ -135,7 +120,6 @@ class _RegistrationFormState extends State<RegistrationForm> {
           );
         },
         onClose: () {
-          // Close modal and go back to program details
           Navigator.pop(context); // Close modal
           Navigator.pop(context); // Close registration form
           Navigator.pop(context); // Go back to program details
@@ -280,94 +264,81 @@ class _RegistrationFormState extends State<RegistrationForm> {
           ),
         ),
         const SizedBox(height: 12),
-        Row(
+        Wrap(
+          spacing: 12,
+          runSpacing: 12,
           children: [
-            Expanded(
-              child: ChoiceChip(
-                label: const Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.credit_card, size: 16),
-                    SizedBox(width: 6),
-                    Text('Card'),
-                  ],
-                ),
-                selected: _selectedPaymentMethod == 'card',
-                onSelected: (selected) {
-                  setState(() {
-                    _selectedPaymentMethod = 'card';
-                  });
-                },
-                selectedColor: AppTheme.primary.withOpacity(0.2),
-                labelStyle: TextStyle(
-                  color: _selectedPaymentMethod == 'card'
-                      ? AppTheme.primary
-                      : Colors.grey[700],
-                  fontWeight: _selectedPaymentMethod == 'card'
-                      ? FontWeight.w800
-                      : FontWeight.w600,
-                ),
-              ),
+            _buildPaymentOption(
+              icon: Icons.credit_card,
+              label: 'Credit/Debit Card',
+              value: 'card',
             ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: ChoiceChip(
-                label: const Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.paypal, size: 16),
-                    SizedBox(width: 6),
-                    Text('PayPal'),
-                  ],
-                ),
-                selected: _selectedPaymentMethod == 'paypal',
-                onSelected: (selected) {
-                  setState(() {
-                    _selectedPaymentMethod = 'paypal';
-                  });
-                },
-                selectedColor: AppTheme.primary.withOpacity(0.2),
-                labelStyle: TextStyle(
-                  color: _selectedPaymentMethod == 'paypal'
-                      ? AppTheme.primary
-                      : Colors.grey[700],
-                  fontWeight: _selectedPaymentMethod == 'paypal'
-                      ? FontWeight.w800
-                      : FontWeight.w600,
-                ),
-              ),
+            _buildPaymentOption(
+              icon: Icons.paypal,
+              label: 'PayPal',
+              value: 'paypal',
             ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: ChoiceChip(
-                label: const Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.account_balance_wallet, size: 16),
-                    SizedBox(width: 6),
-                    Text('Wallet'),
-                  ],
-                ),
-                selected: _selectedPaymentMethod == 'wallet',
-                onSelected: (selected) {
-                  setState(() {
-                    _selectedPaymentMethod = 'wallet';
-                  });
-                },
-                selectedColor: AppTheme.primary.withOpacity(0.2),
-                labelStyle: TextStyle(
-                  color: _selectedPaymentMethod == 'wallet'
-                      ? AppTheme.primary
-                      : Colors.grey[700],
-                  fontWeight: _selectedPaymentMethod == 'wallet'
-                      ? FontWeight.w800
-                      : FontWeight.w600,
-                ),
-              ),
+            _buildPaymentOption(
+              icon: Icons.account_balance,
+              label: 'Bank Transfer',
+              value: 'bank',
+            ),
+            _buildPaymentOption(
+              icon: Icons.wallet,
+              label: 'Digital Wallet',
+              value: 'wallet',
             ),
           ],
         ),
       ],
+    );
+  }
+
+  Widget _buildPaymentOption({
+    required IconData icon,
+    required String label,
+    required String value,
+  }) {
+    final isSelected = _selectedPaymentMethod == value;
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          _selectedPaymentMethod = value;
+        });
+      },
+      child: Container(
+        width: 120,
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        decoration: BoxDecoration(
+          color:
+              isSelected ? AppTheme.primary.withOpacity(0.1) : Colors.grey[100],
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: isSelected ? AppTheme.primary : Colors.transparent,
+            width: 2,
+          ),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              icon,
+              color: isSelected ? AppTheme.primary : Colors.grey[700],
+              size: 24,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
+                color: isSelected ? AppTheme.primary : Colors.grey[700],
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -377,8 +348,10 @@ class _RegistrationFormState extends State<RegistrationForm> {
     _lastNameController.dispose();
     _emailController.dispose();
     _phoneController.dispose();
-    _passwordController.dispose();
-    _confirmPasswordController.dispose();
+    _addressController.dispose();
+    _cityController.dispose();
+    _stateController.dispose();
+    _zipController.dispose();
     super.dispose();
   }
 
@@ -386,9 +359,11 @@ class _RegistrationFormState extends State<RegistrationForm> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Registration & Payment'),
+        title: const Text('Course Registration'),
         centerTitle: true,
         elevation: 0,
+        backgroundColor: AppTheme.primary,
+        foregroundColor: Colors.white,
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
@@ -401,7 +376,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
 
             // Form Title
             const Text(
-              'Complete Your Enrollment',
+              'Complete Your Registration',
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.w900,
@@ -410,7 +385,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
             ),
             const SizedBox(height: 8),
             const Text(
-              'Fill in your details and make payment to start learning',
+              'Fill in your details and complete payment to enroll in this course',
               style: TextStyle(
                 fontSize: 14,
                 color: AppTheme.textSoft,
@@ -424,48 +399,49 @@ class _RegistrationFormState extends State<RegistrationForm> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Personal Information
-                  const Text(
-                    'Personal Information',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w900,
-                      color: AppTheme.textDark,
-                    ),
+                  // Personal Information Section
+                  _buildSectionHeader('Personal Information'),
+
+                  // First & Last Name Row
+                  Row(
+                    children: [
+                      Expanded(
+                        child: TextFormField(
+                          controller: _firstNameController,
+                          decoration: const InputDecoration(
+                            labelText: 'First Name *',
+                            prefixIcon: Icon(Icons.person_outline),
+                            border: OutlineInputBorder(),
+                          ),
+                          validator: _validateName,
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: TextFormField(
+                          controller: _lastNameController,
+                          decoration: const InputDecoration(
+                            labelText: 'Last Name *',
+                            border: OutlineInputBorder(),
+                          ),
+                          validator: _validateName,
+                        ),
+                      ),
+                    ],
                   ),
                   const SizedBox(height: 16),
 
-                  // First Name
-                  TextFormField(
-                    controller: _firstNameController,
-                    decoration: const InputDecoration(
-                      labelText: 'First Name *',
-                      prefixIcon: Icon(Icons.person),
-                      border: OutlineInputBorder(),
-                    ),
-                    validator: _validateName,
-                  ),
-                  const SizedBox(height: 16),
-
-                  // Last Name
-                  TextFormField(
-                    controller: _lastNameController,
-                    decoration: const InputDecoration(
-                      labelText: 'Last Name *',
-                      prefixIcon: Icon(Icons.person),
-                      border: OutlineInputBorder(),
-                    ),
-                    validator: _validateName,
-                  ),
-                  const SizedBox(height: 16),
+                  // Contact Information Section
+                  _buildSectionHeader('Contact Information'),
 
                   // Email
                   TextFormField(
                     controller: _emailController,
                     decoration: const InputDecoration(
                       labelText: 'Email Address *',
-                      prefixIcon: Icon(Icons.email),
+                      prefixIcon: Icon(Icons.email_outlined),
                       border: OutlineInputBorder(),
+                      helperText: 'We\'ll send confirmation to this email',
                     ),
                     keyboardType: TextInputType.emailAddress,
                     validator: _validateEmail,
@@ -477,77 +453,120 @@ class _RegistrationFormState extends State<RegistrationForm> {
                     controller: _phoneController,
                     decoration: const InputDecoration(
                       labelText: 'Phone Number *',
-                      prefixIcon: Icon(Icons.phone),
+                      prefixIcon: Icon(Icons.phone_outlined),
                       border: OutlineInputBorder(),
                     ),
                     keyboardType: TextInputType.phone,
                     validator: _validatePhone,
                   ),
+                  const SizedBox(height: 16),
+
+                  // Education Level Dropdown
+                  DropdownButtonFormField<String>(
+                    value: _selectedEducationLevel,
+                    decoration: const InputDecoration(
+                      labelText: 'Highest Education Level',
+                      prefixIcon: Icon(Icons.school_outlined),
+                      border: OutlineInputBorder(),
+                    ),
+                    items: _educationLevels
+                        .map((level) => DropdownMenuItem(
+                              value: level,
+                              child: Text(level),
+                            ))
+                        .toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        _selectedEducationLevel = value;
+                      });
+                    },
+                    hint: const Text('Select your education level'),
+                  ),
                   const SizedBox(height: 24),
 
-                  // Account Security
-                  const Text(
-                    'Account Security',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w900,
-                      color: AppTheme.textDark,
+                  // Address Information Section
+                  _buildSectionHeader('Address Information'),
+
+                  // Street Address
+                  TextFormField(
+                    controller: _addressController,
+                    decoration: const InputDecoration(
+                      labelText: 'Street Address',
+                      prefixIcon: Icon(Icons.home_outlined),
+                      border: OutlineInputBorder(),
                     ),
                   ),
                   const SizedBox(height: 16),
 
-                  // Password
-                  TextFormField(
-                    controller: _passwordController,
-                    decoration: InputDecoration(
-                      labelText: 'Password *',
-                      prefixIcon: const Icon(Icons.lock),
-                      suffixIcon: IconButton(
-                        icon: Icon(
-                          _obscurePassword
-                              ? Icons.visibility_off
-                              : Icons.visibility,
+                  // City, State, ZIP Row
+                  Row(
+                    children: [
+                      Expanded(
+                        child: TextFormField(
+                          controller: _cityController,
+                          decoration: const InputDecoration(
+                            labelText: 'City',
+                            border: OutlineInputBorder(),
+                          ),
                         ),
-                        onPressed: () {
-                          setState(() => _obscurePassword = !_obscurePassword);
-                        },
                       ),
-                      border: const OutlineInputBorder(),
-                      helperText:
-                          'At least 6 characters with 1 uppercase and 1 number',
-                    ),
-                    obscureText: _obscurePassword,
-                    validator: _validatePassword,
-                  ),
-                  const SizedBox(height: 16),
-
-                  // Confirm Password
-                  TextFormField(
-                    controller: _confirmPasswordController,
-                    decoration: InputDecoration(
-                      labelText: 'Confirm Password *',
-                      prefixIcon: const Icon(Icons.lock),
-                      suffixIcon: IconButton(
-                        icon: Icon(
-                          _obscureConfirmPassword
-                              ? Icons.visibility_off
-                              : Icons.visibility,
+                      const SizedBox(width: 16),
+                      Expanded(
+                        flex: 2,
+                        child: TextFormField(
+                          controller: _stateController,
+                          decoration: const InputDecoration(
+                            labelText: 'State/Province',
+                            border: OutlineInputBorder(),
+                          ),
                         ),
-                        onPressed: () {
-                          setState(() => _obscureConfirmPassword =
-                              !_obscureConfirmPassword);
-                        },
                       ),
-                      border: const OutlineInputBorder(),
-                    ),
-                    obscureText: _obscureConfirmPassword,
-                    validator: _validateConfirmPassword,
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: TextFormField(
+                          controller: _zipController,
+                          decoration: const InputDecoration(
+                            labelText: 'ZIP/Postal',
+                            border: OutlineInputBorder(),
+                          ),
+                          keyboardType: TextInputType.number,
+                        ),
+                      ),
+                    ],
                   ),
                   const SizedBox(height: 24),
 
                   // Payment Method
                   _buildPaymentMethodSection(),
                   const SizedBox(height: 24),
+
+                  // Preferences Section
+                  _buildSectionHeader('Preferences'),
+
+                  // Receive Updates Checkbox
+                  Row(
+                    children: [
+                      Checkbox(
+                        value: _receiveUpdates,
+                        onChanged: (value) {
+                          setState(() {
+                            _receiveUpdates = value ?? false;
+                          });
+                        },
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          'Receive course updates, announcements, and promotional offers',
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.grey[700],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
 
                   // Terms and Conditions
                   Row(
@@ -576,6 +595,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
                                 style: TextStyle(
                                   color: AppTheme.primary,
                                   fontWeight: FontWeight.w700,
+                                  decoration: TextDecoration.underline,
                                 ),
                               ),
                               TextSpan(text: ' and '),
@@ -584,11 +604,13 @@ class _RegistrationFormState extends State<RegistrationForm> {
                                 style: TextStyle(
                                   color: AppTheme.primary,
                                   fontWeight: FontWeight.w700,
+                                  decoration: TextDecoration.underline,
                                 ),
                               ),
                               TextSpan(
-                                  text:
-                                      '. I understand that this is a non-refundable purchase.'),
+                                text:
+                                    '. I understand that this is a non-refundable purchase.',
+                              ),
                             ],
                           ),
                         ),
@@ -598,64 +620,93 @@ class _RegistrationFormState extends State<RegistrationForm> {
                   const SizedBox(height: 32),
 
                   // Submit Button
-                  SizedBox(
-                    width: double.infinity,
-                    height: 56,
-                    child: ElevatedButton(
-                      onPressed: _isLoading ? null : _submitForm,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppTheme.primary,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                      ),
-                      child: _isLoading
-                          ? const SizedBox(
-                              width: 24,
-                              height: 24,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 3,
-                                color: Colors.white,
-                              ),
-                            )
-                          : const Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(Icons.lock_rounded, size: 20),
-                                SizedBox(width: 10),
-                                Text(
-                                  'Complete Payment & Enroll',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w900,
-                                  ),
-                                ),
-                              ],
-                            ),
-                    ),
-                  ),
+                  _buildSubmitButton(),
 
                   // Cancel Button
-                  const SizedBox(height: 16),
-                  Center(
-                    child: TextButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      child: const Text(
-                        'Cancel',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: AppTheme.textSoft,
-                        ),
-                      ),
-                    ),
-                  ),
+                  _buildCancelButton(),
                   const SizedBox(height: 20),
                 ],
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSectionHeader(String title) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16),
+      child: Text(
+        title,
+        style: const TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.w800,
+          color: AppTheme.textDark,
+          letterSpacing: 0.5,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSubmitButton() {
+    return SizedBox(
+      width: double.infinity,
+      height: 56,
+      child: ElevatedButton(
+        onPressed: _isLoading ? null : _submitForm,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: AppTheme.primary,
+          foregroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          elevation: 4,
+          shadowColor: AppTheme.primary.withOpacity(0.3),
+        ),
+        child: _isLoading
+            ? const SizedBox(
+                width: 24,
+                height: 24,
+                child: CircularProgressIndicator(
+                  strokeWidth: 3,
+                  color: Colors.white,
+                ),
+              )
+            : const Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.check_circle_outline, size: 20),
+                  SizedBox(width: 10),
+                  Text(
+                    'Complete Enrollment',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                ],
+              ),
+      ),
+    );
+  }
+
+  Widget _buildCancelButton() {
+    return Center(
+      child: TextButton(
+        onPressed: () {
+          Navigator.pop(context);
+        },
+        style: TextButton.styleFrom(
+          padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+        ),
+        child: const Text(
+          'Cancel Registration',
+          style: TextStyle(
+            fontSize: 14,
+            color: AppTheme.textSoft,
+            fontWeight: FontWeight.w600,
+          ),
         ),
       ),
     );
