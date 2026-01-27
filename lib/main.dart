@@ -17,30 +17,46 @@ import 'models/program.dart';
 
 // Services
 import 'services/enrollment_service.dart';
+import 'services/auth_service.dart';
 
-void main() {
-  runApp(const MyApp());
+// Add import alias or create local alias
+import 'models/user.dart' as my_app; // Add this import with alias
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize auth service
+  final authService = AuthService();
+  await authService.init();
+
+  runApp(MyApp(authService: authService));
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class MyApp extends StatefulWidget {
+  final AuthService authService;
 
+  const MyApp({super.key, required this.authService});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Excelerate Connect',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
-      home: const LoginScreen(),
+      home: widget.authService.isLoggedIn()
+          ? RootShell(authService: widget.authService)
+          : const LoginScreen(),
       routes: {
         '/login': (context) => const LoginScreen(),
         '/signup': (context) => const SignUpScreen(),
         '/success': (context) => const SuccessScreen(),
-        '/main': (context) => const RootShell(),
         '/my-programs': (context) => const MyProgramsScreen(),
-        '/profile': (context) => const ProfileScreen(),
-        '/messages': (context) =>
-            const MessagesScreen(), // Added messages route
+        '/messages': (context) => const MessagesScreen(),
       },
       onGenerateRoute: (settings) {
         if (settings.name == '/program_details') {
@@ -55,20 +71,34 @@ class MyApp extends StatelessWidget {
             builder: (context) => RegistrationForm(program: program),
           );
         }
+        if (settings.name == '/profile') {
+          return MaterialPageRoute(
+            builder: (context) =>
+                ProfileScreen(authService: widget.authService),
+          );
+        }
+        if (settings.name == '/main') {
+          return MaterialPageRoute(
+            builder: (context) => RootShell(authService: widget.authService),
+          );
+        }
         return null;
       },
     );
   }
 }
 
-// Profile Screen
+// Update ProfileScreen to accept AuthService
 class ProfileScreen extends StatelessWidget {
-  const ProfileScreen({super.key});
+  final AuthService authService;
+
+  const ProfileScreen({super.key, required this.authService});
 
   @override
   Widget build(BuildContext context) {
     final enrollmentService = EnrollmentService();
     final enrolledCount = enrollmentService.enrolledCount;
+    final currentUser = authService.currentUser;
 
     return Scaffold(
       appBar: AppBar(
@@ -77,7 +107,7 @@ class ProfileScreen extends StatelessWidget {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            Navigator.pop(context); // Go back
+            Navigator.pop(context);
           },
         ),
       ),
@@ -90,23 +120,30 @@ class ProfileScreen extends StatelessWidget {
               padding: const EdgeInsets.all(16),
               child: Column(
                 children: [
-                  const CircleAvatar(
+                  CircleAvatar(
                     radius: 50,
                     backgroundColor: AppTheme.primary,
-                    child: Icon(Icons.person, size: 60, color: Colors.white),
+                    child: Text(
+                      currentUser?.name.substring(0, 1).toUpperCase() ?? 'U',
+                      style: const TextStyle(
+                        fontSize: 40,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
                   ),
                   const SizedBox(height: 16),
-                  const Text(
-                    'Aabid',
-                    style: TextStyle(
+                  Text(
+                    currentUser?.name ?? 'User',
+                    style: const TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   const SizedBox(height: 4),
-                  const Text(
-                    'aabid@example.com',
-                    style: TextStyle(color: Colors.grey),
+                  Text(
+                    currentUser?.email ?? 'user@example.com',
+                    style: const TextStyle(color: Colors.grey),
                   ),
                   const SizedBox(height: 16),
                   Row(
@@ -164,19 +201,18 @@ class ProfileScreen extends StatelessWidget {
           Card(
             child: Column(
               children: [
+                // Edit Profile
                 ListTile(
                   leading: const Icon(Icons.edit, color: AppTheme.primary),
                   title: const Text('Edit Profile'),
                   trailing: const Icon(Icons.chevron_right),
                   onTap: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Edit Profile feature coming soon!'),
-                      ),
-                    );
+                    _showEditProfileDialog(context, currentUser);
                   },
                 ),
                 const Divider(height: 0),
+
+                // My Programs
                 ListTile(
                   leading: const Icon(Icons.school, color: AppTheme.primary),
                   title: const Text('My Programs'),
@@ -194,6 +230,8 @@ class ProfileScreen extends StatelessWidget {
                   },
                 ),
                 const Divider(height: 0),
+
+                // My Certificates
                 ListTile(
                   leading: const Icon(Icons.assignment, color: Colors.orange),
                   title: const Text('My Certificates'),
@@ -202,46 +240,60 @@ class ProfileScreen extends StatelessWidget {
                     backgroundColor: Colors.orangeAccent,
                   ),
                   onTap: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('My Certificates screen coming soon!'),
-                      ),
-                    );
+                    _showCertificatesScreen(context);
                   },
                 ),
                 const Divider(height: 0),
+
+                // Notifications
                 ListTile(
                   leading: const Icon(Icons.notifications, color: Colors.blue),
                   title: const Text('Notifications'),
                   trailing: Switch(
                     value: true,
-                    onChanged: (value) {},
+                    onChanged: (value) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(value
+                              ? 'Notifications enabled'
+                              : 'Notifications disabled'),
+                          backgroundColor: Colors.green,
+                        ),
+                      );
+                    },
                   ),
                 ),
                 const Divider(height: 0),
-                const ListTile(
-                  leading: Icon(Icons.settings),
-                  title: Text('Settings'),
-                  trailing: Icon(Icons.chevron_right),
+
+                // Settings
+                ListTile(
+                  leading: const Icon(Icons.settings, color: Colors.grey),
+                  title: const Text('Settings'),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () {
+                    _showSettingsScreen(context);
+                  },
                 ),
                 const Divider(height: 0),
-                const ListTile(
-                  leading: Icon(Icons.help),
-                  title: Text('Help & Support'),
-                  trailing: Icon(Icons.chevron_right),
+
+                // Help & Support
+                ListTile(
+                  leading: const Icon(Icons.help, color: Colors.blue),
+                  title: const Text('Help & Support'),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () {
+                    _showHelpSupportScreen(context);
+                  },
                 ),
                 const Divider(height: 0),
+
+                // Logout
                 ListTile(
                   leading: const Icon(Icons.logout, color: Colors.red),
                   title:
                       const Text('Logout', style: TextStyle(color: Colors.red)),
                   onTap: () {
-                    enrollmentService.clearEnrollments();
-                    Navigator.pushNamedAndRemoveUntil(
-                      context,
-                      '/login',
-                      (route) => false,
-                    );
+                    _showLogoutConfirmation(context, enrollmentService);
                   },
                 ),
               ],
@@ -280,6 +332,622 @@ class ProfileScreen extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  // FIXED: Use the aliased User class
+  void _showEditProfileDialog(BuildContext context, my_app.User? currentUser) {
+    final nameController = TextEditingController(text: currentUser?.name ?? '');
+    final emailController =
+        TextEditingController(text: currentUser?.email ?? '');
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Edit Profile'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: nameController,
+              decoration: const InputDecoration(
+                labelText: 'Full Name',
+                border: OutlineInputBorder(),
+              ),
+            ),
+            const SizedBox(height: 16),
+            TextField(
+              controller: emailController,
+              decoration: const InputDecoration(
+                labelText: 'Email',
+                border: OutlineInputBorder(),
+              ),
+              keyboardType: TextInputType.emailAddress,
+            ),
+            const SizedBox(height: 8),
+            const Text(
+              'Note: Email changes may require verification',
+              style: TextStyle(fontSize: 12, color: Colors.grey),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              if (nameController.text.isNotEmpty &&
+                  emailController.text.isNotEmpty) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Profile updated successfully'),
+                    backgroundColor: Colors.green,
+                    duration: Duration(seconds: 2),
+                  ),
+                );
+                Navigator.pop(context);
+              }
+            },
+            child: const Text('Save Changes'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showCertificatesScreen(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => Container(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Center(
+              child: Container(
+                width: 60,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: Colors.grey[300],
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            const Text(
+              'My Certificates',
+              style: TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 16),
+            const Text(
+              'Download your earned certificates',
+              style: TextStyle(color: Colors.grey),
+            ),
+            const SizedBox(height: 20),
+
+            // Certificate 1
+            _CertificateCard(
+              title: 'Flutter Development',
+              date: 'Completed: Oct 15, 2024',
+              onDownload: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Certificate downloaded successfully'),
+                    backgroundColor: Colors.green,
+                    duration: Duration(seconds: 2),
+                  ),
+                );
+              },
+            ),
+
+            const SizedBox(height: 12),
+
+            // Certificate 2
+            _CertificateCard(
+              title: 'UI/UX Design',
+              date: 'Completed: Sep 28, 2024',
+              onDownload: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Certificate downloaded successfully'),
+                    backgroundColor: Colors.green,
+                    duration: Duration(seconds: 2),
+                  ),
+                );
+              },
+            ),
+
+            const SizedBox(height: 12),
+
+            // Certificate 3
+            _CertificateCard(
+              title: 'Web Development',
+              date: 'Completed: Aug 10, 2024',
+              onDownload: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Certificate downloaded successfully'),
+                    backgroundColor: Colors.green,
+                    duration: Duration(seconds: 2),
+                  ),
+                );
+              },
+            ),
+
+            const SizedBox(height: 24),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () => Navigator.pop(context),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppTheme.primary,
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                child: const Text(
+                  'Close',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showSettingsScreen(BuildContext context) {
+    bool darkMode = false;
+    bool autoPlay = true;
+    bool downloadWifiOnly = true;
+
+    showDialog(
+      context: context,
+      builder: (context) => StatefulBuilder(
+        builder: (context, setState) {
+          return AlertDialog(
+            title: const Row(
+              children: [
+                Icon(Icons.settings, color: AppTheme.primary),
+                SizedBox(width: 10),
+                Text('App Settings'),
+              ],
+            ),
+            content: SizedBox(
+              width: double.maxFinite,
+              child: ListView(
+                shrinkWrap: true,
+                children: [
+                  const Text(
+                    'General Settings',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 16),
+                  SwitchListTile(
+                    title: const Text('Dark Mode'),
+                    subtitle: const Text('Switch to dark theme'),
+                    value: darkMode,
+                    onChanged: (value) => setState(() => darkMode = value),
+                  ),
+                  SwitchListTile(
+                    title: const Text('Auto-play Videos'),
+                    subtitle: const Text('Automatically play course videos'),
+                    value: autoPlay,
+                    onChanged: (value) => setState(() => autoPlay = value),
+                  ),
+                  SwitchListTile(
+                    title: const Text('Download on Wi-Fi Only'),
+                    subtitle: const Text('Save mobile data'),
+                    value: downloadWifiOnly,
+                    onChanged: (value) =>
+                        setState(() => downloadWifiOnly = value),
+                  ),
+                  const SizedBox(height: 24),
+                  const Text(
+                    'App Theme',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 12),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      _ThemeOption(
+                        color: AppTheme.primary,
+                        selected: true,
+                        onTap: () {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Theme changed to Blue'),
+                              backgroundColor: Colors.blue,
+                              duration: Duration(seconds: 1),
+                            ),
+                          );
+                        },
+                      ),
+                      _ThemeOption(
+                        color: Colors.green,
+                        selected: false,
+                        onTap: () {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Theme changed to Green'),
+                              backgroundColor: Colors.green,
+                              duration: Duration(seconds: 1),
+                            ),
+                          );
+                        },
+                      ),
+                      _ThemeOption(
+                        color: Colors.purple,
+                        selected: false,
+                        onTap: () {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Theme changed to Purple'),
+                              backgroundColor: Colors.purple,
+                              duration: Duration(seconds: 1),
+                            ),
+                          );
+                        },
+                      ),
+                      _ThemeOption(
+                        color: Colors.orange,
+                        selected: false,
+                        onTap: () {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Theme changed to Orange'),
+                              backgroundColor: Colors.orange,
+                              duration: Duration(seconds: 1),
+                            ),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  const Text(
+                    'Choose your preferred app color theme',
+                    style: TextStyle(fontSize: 12, color: Colors.grey),
+                  ),
+                ],
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('Cancel'),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Settings saved successfully'),
+                      backgroundColor: Colors.green,
+                      duration: Duration(seconds: 2),
+                    ),
+                  );
+                  Navigator.pop(context);
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppTheme.primary,
+                ),
+                child: const Text('Save Settings',
+                    style: TextStyle(color: Colors.white)),
+              ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+
+  void _showHelpSupportScreen(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Row(
+          children: [
+            Icon(Icons.help, color: Colors.blue),
+            SizedBox(width: 10),
+            Text('Help & Support'),
+          ],
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'How can we help you today?',
+              style: TextStyle(fontSize: 14, color: Colors.grey),
+            ),
+            const SizedBox(height: 20),
+            _SupportOption(
+              icon: Icons.help_outline,
+              title: 'Frequently Asked Questions',
+              subtitle: 'Find answers to common questions',
+              onTap: () {
+                Navigator.pop(context);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Opening Frequently Asked Questions'),
+                    duration: Duration(seconds: 2),
+                  ),
+                );
+              },
+            ),
+            _SupportOption(
+              icon: Icons.email,
+              title: 'Contact Support',
+              subtitle: 'Get help from our support team',
+              onTap: () {
+                Navigator.pop(context);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Opening contact support form'),
+                    duration: Duration(seconds: 2),
+                  ),
+                );
+              },
+            ),
+            _SupportOption(
+              icon: Icons.bug_report,
+              title: 'Report a Bug',
+              subtitle: 'Found an issue? Let us know',
+              onTap: () {
+                Navigator.pop(context);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Opening bug report form'),
+                    duration: Duration(seconds: 2),
+                  ),
+                );
+              },
+            ),
+            _SupportOption(
+              icon: Icons.feedback,
+              title: 'Send Feedback',
+              subtitle: 'Share your thoughts with us',
+              onTap: () {
+                Navigator.pop(context);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Opening feedback form'),
+                    duration: Duration(seconds: 2),
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Close'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showLogoutConfirmation(
+      BuildContext context, EnrollmentService enrollmentService) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Row(
+          children: [
+            Icon(Icons.logout, color: Colors.red),
+            SizedBox(width: 10),
+            Text('Confirm Logout'),
+          ],
+        ),
+        content: const Text(
+            'Are you sure you want to logout from Excelerate Connect?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              // Clear enrollments
+              enrollmentService.clearEnrollments();
+
+              // Logout from auth service
+              authService.logout();
+
+              // Navigate to login and clear all routes
+              Navigator.pop(context);
+              Navigator.pushNamedAndRemoveUntil(
+                context,
+                '/login',
+                (route) => false,
+              );
+
+              // Show logout message
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Logged out successfully'),
+                  backgroundColor: Colors.green,
+                  duration: Duration(seconds: 2),
+                ),
+              );
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red,
+            ),
+            child: const Text('Logout', style: TextStyle(color: Colors.white)),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _CertificateCard extends StatelessWidget {
+  final String title;
+  final String date;
+  final VoidCallback onDownload;
+
+  const _CertificateCard({
+    required this.title,
+    required this.date,
+    required this.onDownload,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 2,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Row(
+          children: [
+            Container(
+              width: 50,
+              height: 50,
+              decoration: BoxDecoration(
+                color: Colors.green.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: const Icon(Icons.verified, color: Colors.green, size: 30),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    date,
+                    style: const TextStyle(
+                      fontSize: 12,
+                      color: Colors.grey,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            IconButton(
+              icon: Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: AppTheme.primary.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: const Icon(Icons.download, color: AppTheme.primary),
+              ),
+              onPressed: onDownload,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ThemeOption extends StatelessWidget {
+  final Color color;
+  final bool selected;
+  final VoidCallback onTap;
+
+  const _ThemeOption({
+    required this.color,
+    required this.selected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Column(
+        children: [
+          Container(
+            width: 50,
+            height: 50,
+            decoration: BoxDecoration(
+              color: color,
+              borderRadius: BorderRadius.circular(10),
+              border: selected
+                  ? Border.all(color: Colors.black, width: 3)
+                  : Border.all(color: Colors.grey[300]!, width: 1),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.1),
+                  blurRadius: 4,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 4),
+          if (selected)
+            const Icon(Icons.check_circle, color: Colors.green, size: 16),
+        ],
+      ),
+    );
+  }
+}
+
+class _SupportOption extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final String subtitle;
+  final VoidCallback onTap;
+
+  const _SupportOption({
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      contentPadding: const EdgeInsets.symmetric(vertical: 8),
+      leading: Container(
+        width: 40,
+        height: 40,
+        decoration: BoxDecoration(
+          color: Colors.blue.withOpacity(0.1),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Icon(icon, color: Colors.blue),
+      ),
+      title: Text(
+        title,
+        style: const TextStyle(fontWeight: FontWeight.bold),
+      ),
+      subtitle: Text(
+        subtitle,
+        style: const TextStyle(fontSize: 12, color: Colors.grey),
+      ),
+      trailing: const Icon(Icons.chevron_right, color: Colors.grey),
+      onTap: onTap,
     );
   }
 }
@@ -620,7 +1288,9 @@ class ChatDetailScreen extends StatelessWidget {
 }
 
 class RootShell extends StatefulWidget {
-  const RootShell({super.key});
+  final AuthService authService;
+
+  const RootShell({super.key, required this.authService});
 
   @override
   State<RootShell> createState() => _RootShellState();
@@ -629,13 +1299,19 @@ class RootShell extends StatefulWidget {
 class _RootShellState extends State<RootShell> {
   int _index = 0;
 
-  final _pages = [
-    const HomeScreen(),
-    const ProgramsScreen(),
-    const SearchScreen(),
-    const MessagesScreen(), // Now working messages screen
-    const ProfileScreen(),
-  ];
+  late final List<Widget> _pages;
+
+  @override
+  void initState() {
+    super.initState();
+    _pages = [
+      const HomeScreen(),
+      const ProgramsScreen(),
+      const SearchScreen(),
+      const MessagesScreen(),
+      ProfileScreen(authService: widget.authService),
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {
