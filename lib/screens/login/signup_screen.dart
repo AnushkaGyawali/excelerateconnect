@@ -92,7 +92,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
             duration: const Duration(seconds: 3),
           ),
         );
-        
+
         // Navigate to success screen
         await Future.delayed(const Duration(milliseconds: 500));
         Navigator.pushNamed(context, '/success');
@@ -141,7 +141,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     ),
                   ),
                   const SizedBox(height: 40),
-                  
+
                   // Name Field
                   TextFormField(
                     controller: _nameController,
@@ -166,7 +166,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     },
                   ),
                   const SizedBox(height: 20),
-                  
+
                   // Email Field
                   TextFormField(
                     controller: _emailController,
@@ -185,14 +185,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       if (value == null || value.isEmpty) {
                         return 'Please enter your email';
                       }
-                      if (!RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$').hasMatch(value)) {
+                      if (!RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$')
+                          .hasMatch(value)) {
                         return 'Please enter a valid email';
                       }
                       return null;
                     },
                   ),
                   const SizedBox(height: 20),
-                  
+
                   // Password Field
                   TextFormField(
                     controller: _passwordController,
@@ -230,7 +231,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     },
                   ),
                   const SizedBox(height: 20),
-                  
+
                   // Confirm Password Field
                   TextFormField(
                     controller: _confirmPasswordController,
@@ -267,10 +268,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       return null;
                     },
                   ),
-                  
+
                   const SizedBox(height: 30),
-                  
-                  // Sign Up Button
+
+                  // Sign Up Button - FIXED with foregroundColor
                   SizedBox(
                     width: double.infinity,
                     height: 56,
@@ -278,6 +279,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       onPressed: _isLoading ? null : _signUp,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppTheme.primary,
+                        foregroundColor: Colors.white, // Add this line
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(16),
                         ),
@@ -301,18 +303,18 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             ),
                     ),
                   ),
-                  
+
                   // Divider
                   const SizedBox(height: 30),
                   const Divider(color: Colors.grey),
                   const SizedBox(height: 20),
-                  
+
                   // Login Link
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       const Text(
-                        'Already registered?',
+                        'Already have an account?',
                         style: TextStyle(color: AppTheme.textSoft),
                       ),
                       const SizedBox(width: 4),
@@ -323,7 +325,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 Navigator.pop(context);
                               },
                         child: const Text(
-                          'Login Here',
+                          'Log in',
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             color: AppTheme.primary,
@@ -332,7 +334,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                     ],
                   ),
-                  
+
                   // Terms & Privacy
                   const SizedBox(height: 30),
                   const Center(

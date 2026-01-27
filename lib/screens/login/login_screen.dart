@@ -56,7 +56,7 @@ class _LoginScreenState extends State<LoginScreen> {
       );
 
       setState(() => _isLoading = false);
-      
+
       // Hide loading snackbar
       ScaffoldMessenger.of(context).hideCurrentSnackBar();
 
@@ -78,7 +78,7 @@ class _LoginScreenState extends State<LoginScreen> {
             duration: const Duration(seconds: 2),
           ),
         );
-        
+
         // Navigate to main screen
         await Future.delayed(const Duration(milliseconds: 500));
         Navigator.pushNamedAndRemoveUntil(
@@ -124,7 +124,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                   const SizedBox(height: 60),
-                  
+
                   // Email Field
                   TextFormField(
                     controller: _emailController,
@@ -143,14 +143,15 @@ class _LoginScreenState extends State<LoginScreen> {
                       if (value == null || value.isEmpty) {
                         return 'Please enter your email';
                       }
-                      if (!RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$').hasMatch(value)) {
+                      if (!RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$')
+                          .hasMatch(value)) {
                         return 'Please enter a valid email';
                       }
                       return null;
                     },
                   ),
                   const SizedBox(height: 20),
-                  
+
                   // Password Field
                   TextFormField(
                     controller: _passwordController,
@@ -187,7 +188,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       return null;
                     },
                   ),
-                  
+
                   const SizedBox(height: 10),
                   Align(
                     alignment: Alignment.centerRight,
@@ -195,7 +196,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       onPressed: () {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
-                            content: Text('Password reset link sent to your email'),
+                            content:
+                                Text('Password reset link sent to your email'),
                             backgroundColor: Colors.green,
                           ),
                         );
@@ -206,9 +208,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                   ),
-                  
+
                   const SizedBox(height: 30),
-                  
+
                   // Login Button
                   SizedBox(
                     width: double.infinity,
@@ -217,6 +219,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       onPressed: _isLoading ? null : _login,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppTheme.primary,
+                        foregroundColor:
+                            Colors.white, // Add this for text color
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(16),
                         ),
@@ -232,7 +236,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                             )
                           : const Text(
-                              'Login',
+                              'Log In',
                               style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w900,
@@ -240,7 +244,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                     ),
                   ),
-                  
+
                   // Divider
                   const SizedBox(height: 30),
                   Row(
@@ -263,14 +267,14 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ],
                   ),
-                  
+
                   // Sign Up Link
                   const SizedBox(height: 20),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       const Text(
-                        "New to Excelerate Connect?",
+                        "Don't have an account?",
                         style: TextStyle(color: AppTheme.textSoft),
                       ),
                       const SizedBox(width: 4),
@@ -281,7 +285,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 Navigator.pushNamed(context, '/signup');
                               },
                         child: const Text(
-                          'Create Account',
+                          'Sign Up',
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             color: AppTheme.primary,
