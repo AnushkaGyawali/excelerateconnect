@@ -304,29 +304,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   
                   // Divider
                   const SizedBox(height: 30),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Divider(color: Colors.grey[300]),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        child: Text(
-                          'ALREADY HAVE AN ACCOUNT?',
-                          style: TextStyle(
-                            color: Colors.grey[600],
-                            fontSize: 12,
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        child: Divider(color: Colors.grey[300]),
-                      ),
-                    ],
-                  ),
+                  const Divider(color: Colors.grey),
+                  const SizedBox(height: 20),
                   
                   // Login Link
-                  const SizedBox(height: 20),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
