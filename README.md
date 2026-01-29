@@ -21,15 +21,20 @@ Excelerate Connect aims to improve accessibility, engagement, and communication 
 
 ---
 
-## 🔍 Features (Planned Scope)
+## 🔍 Features 
 
-### In-Scope
+### Implemented Features
 
-- Secure user authentication and onboarding
+- Secure user authentication (Sign Up & Login)
+- Form validation for all user inputs
 - Dynamic dashboard for announcements and updates
 - Searchable and filterable program catalog
 - Program and learning module previews
-- Feedback submission interface
+- Feedback and registration forms
+- Protected routing for authenticated users
+- Success and confirmation screens
+
+---
 
 ### Out-of-Scope (Future Enhancements)
 
@@ -45,6 +50,23 @@ Excelerate Connect aims to improve accessibility, engagement, and communication 
 - **State Management:** Provider / Riverpod
 - **UI/UX Design:** Figma
 - **Version Control:** Git & GitHub
+- **Data Handling:** JSON (Mock Database)
+- **Routing:** Flutter Navigator (Protected Routes)
+
+---
+
+## 🔐 Authentication System
+
+The application includes a complete authentication workflow implemented during the final sprint:
+
+- User account creation (Sign Up)
+- Secure login functionality
+- Input validation for authentication forms
+- JSON-based user data storage
+- Protected dashboard access for authenticated users only
+- Success screens after successful authentication
+
+All authentication flows were tested and verified after merging the final sprint branch into the main branch.
 
 ---
 
@@ -56,16 +78,24 @@ The project follows an iterative and modular development approach aligned with I
 
 ## 📦 Project Status
 
-🚧 **In Development**  
-This repository currently contains the initial project setup and documentation. Features will be implemented incrementally during the internship period.
+✅ **Final Sprint Completed**
 
-🚧 **Week 3 Progress:**
+The core features of the application have been implemented and tested successfully.  
+This includes authentication, dashboard functionality, program catalog, protected routing, and form validations.
 
-- Core UI flows completed: Authentication (Sign Up, Login, Registration)
-- Dashboard and Program Catalog implemented
-- Program Catalog & Details screens currently use sample JSON data\*\*
-- Registration & Login forms are functional with basic validation\*\*
-- Screenshots added to README
+---
+
+✅ **Final Sprint Summary**
+
+- Complete authentication system implemented (Sign Up & Login)
+- Form validations added for user inputs
+- JSON-based user data handling
+- Protected routes for authenticated users
+- Dashboard and Program Catalog fully functional
+- Program Catalog & Details screens use sample JSON data
+- Registration forms tested and verified
+- UI flows tested after final sprint merge
+- Screenshots updated in README
 
 ---
 
@@ -146,6 +176,17 @@ This repository currently contains the initial project setup and documentation. 
     </td>
   </tr>>
 </table>
+
+---
+
+## ✅ Testing & Verification
+
+After the final sprint merge, the application was tested to verify:
+- Account creation and login flow
+- Form validation behavior
+- Protected routing and dashboard security
+- Navigation between core screens
+All tested features are functioning as expected.
 
 ---
 
