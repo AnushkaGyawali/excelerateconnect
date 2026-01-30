@@ -104,12 +104,12 @@ This includes authentication, dashboard functionality, program catalog, protecte
 <table>
   <tr>
   <td align="center">
-      <img src="/assets/screenshots/signup-page.png" width="250"/>
+      <img src="/assets/screenshots/signup.png" width="250"/>
       <br/>
       <b>Sign up Screen</b>
     </td>
     <td align="center">
-      <img src="/assets/screenshots/login-page.png" width="250"/>
+      <img src="/assets/screenshots/login.png" width="250"/>
       <br/>
       <b>Login Screen</b>
     </td>
@@ -119,7 +119,7 @@ This includes authentication, dashboard functionality, program catalog, protecte
       <b> Login Registration</b>
     </td>
     <td align="center">
-      <img src="/assets/screenshots/homepage.png" width="250"/>
+      <img src="/assets/screenshots/dashboard.png" width="250"/>
       <br/>
       <b>Dashboard</b>
     </td>
@@ -152,7 +152,7 @@ This includes authentication, dashboard functionality, program catalog, protecte
       <b>Registration and Payment Form</b>
     </td>
      <td align="center">
-      <img src="/assets/screenshots/Enrollment_message.png" width="250"/>
+      <img src="/assets/screenshots/course-success.png" width="250"/>
       <br/>
       <b>Enrollment Message</b>
     </td>
@@ -174,7 +174,20 @@ This includes authentication, dashboard functionality, program catalog, protecte
       <br/>
       <b>My Profile Screen</b>
     </td>
-  </tr>>
+  </tr>
+
+<tr>
+    <td align="center">
+      <img src="/assets/screenshots/login-error.png" width="250"/>
+      <br/>
+      <b>Login-error Page</b>
+    </td>
+    <td align="center">
+      <img src="/assets/screenshots/login-success.png" width="250"/>
+      <br/>
+      <b>Login-success Page</b>
+    </td>
+      </tr>
 </table>
 
 ---
