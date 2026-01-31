@@ -55,6 +55,16 @@ Excelerate Connect aims to improve accessibility, engagement, and communication 
 
 ---
 
+## Repository Structure
+
+The repository includes:
+- lib directory containing all Flutter source code
+- assets directory for images and static resources
+- mock_data directory for JSON files
+- pubspec.yaml for dependency management
+- README.md for project documentation
+
+---
 ## 🔐 Authentication System
 
 The application includes a complete authentication workflow implemented during the final sprint:
@@ -73,6 +83,33 @@ All authentication flows were tested and verified after merging the final sprint
 ## 🧩 Development Methodology
 
 The project follows an iterative and modular development approach aligned with IEEE-recommended software engineering practices. The development lifecycle includes requirement analysis, UI/UX design, implementation, testing, and documentation.
+
+---
+## Setup Instructions
+
+Follow the steps below to run the application locally.
+
+### Prerequisites
+
+- Flutter SDK installed
+- Android Studio or VS Code
+- Android emulator or physical device
+- Xcode required for iOS builds on macOS
+
+### Steps
+
+1. Clone the repository
+2. Navigate to the project root directory
+3. Run the following command to install dependencies
+
+   flutter pub get
+
+4. Connect an emulator or physical device
+5. Run the application
+
+   flutter run
+
+The application uses mock JSON data. No backend or API configuration is required.
 
 ---
 
@@ -174,20 +211,17 @@ This includes authentication, dashboard functionality, program catalog, protecte
       <br/>
       <b>My Profile Screen</b>
     </td>
-  </tr>
-
-<tr>
     <td align="center">
       <img src="/assets/screenshots/login-error.png" width="250"/>
       <br/>
       <b>Login-error Page</b>
     </td>
-    <td align="center">
+   <td align="center">
       <img src="/assets/screenshots/login-success.png" width="250"/>
       <br/>
       <b>Login-success Page</b>
     </td>
-      </tr>
+  </tr>
 </table>
 
 ---
