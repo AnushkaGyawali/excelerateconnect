@@ -243,6 +243,44 @@ All tested features are functioning as expected.
 
 ---
 
+## Changelog
+
+### Version 1.0.0
+
+- Initial release
+- Authentication flow implemented
+- Dashboard and program catalog completed
+- Feedback and registration forms added
+- Protected routing enabled
+- Final UI polish and bug fixes
+
+---
+
+## Contribution Log
+
+- UI and UX design finalized in Figma
+- Core Flutter architecture implemented
+- State management integrated using Provider and Riverpod
+- Mock data system designed using JSON
+- Final testing and stabilization completed
+
+---
+## Commit History Guidelines
+
+This repository follows a clean and meaningful commit history.
+
+Commit message rules:
+- Use clear and descriptive messages
+- One logical change per commit
+- Avoid vague messages such as update or fixes
+
+Example commit messages:
+- Add authentication screens and validation logic
+- Implement dashboard announcement feed
+- Add program catalog search and filters
+- Update README with setup instructions and screenshots
+
+
 ## 🤝 Collaboration
 
 This is a shared repository maintained by the project team. Contributors are expected to follow standard Git practices, including meaningful commit messages and pull request-based collaboration.
