@@ -94,21 +94,27 @@ Follow the steps below to run the application locally.
 - Flutter SDK installed
 - Android Studio or VS Code
 - Android emulator or physical device
-- Xcode required for iOS builds on macOS
+- Xcode is required for iOS builds on macOS
 
 ### Steps
 
 1. Clone the repository
+```bash
+https://github.com/AnushkaGyawali/excelerateconnect
+```
 2. Navigate to the project root directory
+```bash
+cd excelerateconnect
+```
 3. Run the following command to install dependencies
-
-   flutter pub get
-
+```bash
+flutter pub get
+```
 4. Connect an emulator or physical device
 5. Run the application
-
+```bash
    flutter run
-
+```
 The application uses mock JSON data. No backend or API configuration is required.
 
 ---
