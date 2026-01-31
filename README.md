@@ -100,7 +100,7 @@ Follow the steps below to run the application locally.
 
 1. Clone the repository
 ```bash
-https://github.com/AnushkaGyawali/excelerateconnect
+git clone https://github.com/AnushkaGyawali/excelerateconnect
 ```
 2. Navigate to the project root directory
 ```bash
