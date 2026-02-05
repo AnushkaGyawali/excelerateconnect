@@ -14,7 +14,7 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final currentUser = AuthService().currentUser;
-    
+
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -35,8 +35,9 @@ class HomeScreen extends StatelessWidget {
                     const SizedBox(height: 12),
 
                     /// Horizontal News Slider
+                    /// FIXED: Increased height from 160 to 210 to prevent overflow
                     SizedBox(
-                      height: 160,
+                      height: 210,
                       child: ListView(
                         scrollDirection: Axis.horizontal,
                         physics: const BouncingScrollPhysics(),
@@ -53,7 +54,7 @@ class HomeScreen extends StatelessWidget {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (_) => ProgramDetailsScreen(
+                                  builder: (_) => const ProgramDetailsScreen(
                                     program: Program(
                                       id: '1',
                                       title: 'UI/UX Design Workshop',
@@ -101,7 +102,7 @@ class HomeScreen extends StatelessWidget {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (_) => ProgramDetailsScreen(
+                                  builder: (_) => const ProgramDetailsScreen(
                                     program: Program(
                                       id: '3',
                                       title: 'AI & ML Bootcamp',
@@ -132,7 +133,7 @@ class HomeScreen extends StatelessWidget {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (_) => ProgramDetailsScreen(
+                                  builder: (_) => const ProgramDetailsScreen(
                                     program: Program(
                                       id: '4',
                                       title: 'Hackathon 2024',
@@ -196,7 +197,7 @@ class HomeScreen extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (_) => ProgramDetailsScreen(
+                            builder: (_) => const ProgramDetailsScreen(
                               program: Program(
                                 id: '5',
                                 title: 'App Development Bootcamp',
@@ -225,7 +226,7 @@ class HomeScreen extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (_) => ProgramDetailsScreen(
+                            builder: (_) => const ProgramDetailsScreen(
                               program: Program(
                                 id: '6',
                                 title: 'Web Development Mastery',
@@ -254,7 +255,7 @@ class HomeScreen extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (_) => ProgramDetailsScreen(
+                            builder: (_) => const ProgramDetailsScreen(
                               program: Program(
                                 id: '7',
                                 title: 'Data Science Fundamentals',
@@ -330,24 +331,24 @@ class HomeScreen extends StatelessWidget {
       context: context,
       builder: (context) => AlertDialog(
         title: Text(eventName),
-        content: Column(
+        content: const Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text("📍 Innovation Center"),
-            const SizedBox(height: 8),
-            const Text("⏰ Tomorrow, 6:00 PM - 8:00 PM"),
-            const SizedBox(height: 8),
-            const Text(
+            Text("📍 Innovation Center"),
+            SizedBox(height: 8),
+            Text("⏰ Tomorrow, 6:00 PM - 8:00 PM"),
+            SizedBox(height: 8),
+            Text(
               "Join us for an exciting networking event with industry experts, tech leaders, and fellow developers. Free food and drinks provided!",
               style: TextStyle(fontSize: 14),
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: 16),
             Row(
               children: [
-                const Icon(Icons.people, size: 16),
-                const SizedBox(width: 4),
-                const Text("45 attending"),
+                Icon(Icons.people, size: 16),
+                SizedBox(width: 4),
+                Text("45 attending"),
               ],
             ),
           ],
@@ -656,20 +657,26 @@ class _HomeHeader extends StatelessWidget {
                     children: [
                       Container(
                         height: 10,
+                        width: double.infinity,
                         decoration: BoxDecoration(
                           color: const Color(0xFFEFEFEF),
                           borderRadius: BorderRadius.circular(5),
                         ),
                       ),
-                      Container(
-                        height: 10,
-                        width: MediaQuery.of(context).size.width * 0.46,
-                        decoration: BoxDecoration(
-                          gradient: const LinearGradient(
-                            colors: [Color(0xFFFF7A3D), Color(0xFFFC7B5A)],
-                          ),
-                          borderRadius: BorderRadius.circular(5),
-                        ),
+                      LayoutBuilder(
+                          builder: (context, constraints) {
+                            // 46/60 is approx 0.77
+                            return Container(
+                              height: 10,
+                              width: constraints.maxWidth * 0.77,
+                              decoration: BoxDecoration(
+                                gradient: const LinearGradient(
+                                  colors: [Color(0xFFFF7A3D), Color(0xFFFC7B5A)],
+                                ),
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                            );
+                          }
                       ),
                     ],
                   ),
@@ -724,7 +731,8 @@ class _NewsBanner extends StatelessWidget {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 300),
         width: 280,
-        height: 140,
+        // FIXED: Increased height to 190 to accommodate text and button without overflow
+        height: 190,
         padding: const EdgeInsets.all(18),
         decoration: BoxDecoration(
           color: color,
@@ -743,6 +751,7 @@ class _NewsBanner extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min, // Use min to shrink if possible
                 children: [
                   Text(
                     title,
@@ -755,16 +764,19 @@ class _NewsBanner extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                   ),
                   const SizedBox(height: 6),
-                  Text(
-                    description,
-                    style: const TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w500,
-                      color: AppTheme.textSoft,
-                      height: 1.3,
+                  // FIXED: Wrapped in Flexible to handle potential text overflow
+                  Flexible(
+                    child: Text(
+                      description,
+                      style: const TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w500,
+                        color: AppTheme.textSoft,
+                        height: 1.3,
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
                     ),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
                   ),
                   const SizedBox(height: 14),
                   MouseRegion(
@@ -895,15 +907,19 @@ class _MeetupBanner extends StatelessWidget {
                         const Icon(Icons.calendar_today,
                             size: 18, color: Color(0xFF6C63FF)),
                         const SizedBox(width: 8),
-                        const Text(
-                          "Monthly Event",
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w700,
-                            color: Color(0xFF6C63FF),
+                        const Expanded(
+                          child: Text(
+                            "Monthly Event",
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w700,
+                              color: Color(0xFF6C63FF),
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
                           ),
                         ),
-                        const Spacer(),
+                        const SizedBox(width: 8),
                         Container(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 16, vertical: 10),
@@ -1128,7 +1144,7 @@ class SectionTitle extends StatelessWidget {
                 color: AppTheme.primary.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(10),
               ),
-              child: Row(
+              child: const Row(
                 children: [
                   Text(
                     "See all",
@@ -1138,7 +1154,7 @@ class SectionTitle extends StatelessWidget {
                       color: AppTheme.primary,
                     ),
                   ),
-                  const SizedBox(width: 4),
+                  SizedBox(width: 4),
                   Icon(Icons.arrow_forward,
                       size: 16, color: AppTheme.primary),
                 ],
@@ -1223,25 +1239,30 @@ class _PlanTile extends StatelessWidget {
                             children: [
                               Container(
                                 height: 6,
+                                width: double.infinity,
                                 decoration: BoxDecoration(
                                   color: Colors.grey[200],
                                   borderRadius: BorderRadius.circular(3),
                                 ),
                               ),
-                              Container(
-                                height: 6,
-                                width: MediaQuery.of(context).size.width *
-                                    0.2 *
-                                    progressValue,
-                                decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                    colors: [
-                                      AppTheme.primary,
-                                      AppTheme.primary.withOpacity(0.7),
-                                    ],
-                                  ),
-                                  borderRadius: BorderRadius.circular(3),
-                                ),
+                              LayoutBuilder(
+                                  builder: (context, constraints) {
+                                    // FIXED: Clamped value to avoid layout error if progress > 1.0
+                                    final safeProgress = progressValue.clamp(0.0, 1.0);
+                                    return Container(
+                                      height: 6,
+                                      width: constraints.maxWidth * safeProgress,
+                                      decoration: BoxDecoration(
+                                        gradient: LinearGradient(
+                                          colors: [
+                                            AppTheme.primary,
+                                            AppTheme.primary.withOpacity(0.7),
+                                          ],
+                                        ),
+                                        borderRadius: BorderRadius.circular(3),
+                                      ),
+                                    );
+                                  }
                               ),
                             ],
                           ),

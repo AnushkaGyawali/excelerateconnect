@@ -58,96 +58,100 @@ class _ProgramsScreenState extends State<ProgramsScreen> {
         : programs.where((p) => p.category == selected).toList();
 
     return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(18, 18, 18, 0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                const Text(
-                  "Programs",
-                  style: TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.w900,
-                    color: AppTheme.textDark,
+      // FIXED: Wrapped in SingleChildScrollView to prevent "Bottom Overflow" errors
+      // when screen height is small or content expands (like keyboard opening)
+      child: SingleChildScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(18, 18, 18, 18), // Added bottom padding
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  const Text(
+                    "Programs",
+                    style: TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.w900,
+                      color: AppTheme.textDark,
+                    ),
                   ),
-                ),
-                const Spacer(),
-                // Add refresh button
-                IconButton(
-                  onPressed: _loadPrograms,
-                  icon: const Icon(Icons.refresh, color: AppTheme.primary),
-                  tooltip: 'Refresh programs',
-                ),
-                Container(
-                  width: 42,
-                  height: 42,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFEFF4FF),
-                    borderRadius: BorderRadius.circular(14),
+                  const Spacer(),
+                  // Add refresh button
+                  IconButton(
+                    onPressed: _loadPrograms,
+                    icon: const Icon(Icons.refresh, color: AppTheme.primary),
+                    tooltip: 'Refresh programs',
                   ),
-                  child: const Icon(Icons.person, color: AppTheme.primary),
-                ),
-              ],
-            ),
-            const SizedBox(height: 14),
-            const SearchField(hint: "Find Course"),
-            const SizedBox(height: 14),
-            const Row(
-              children: [
-                Expanded(
-                  child: _MiniBanner(
-                    title: "Coding",
-                    icon: Icons.code_rounded,
+                  Container(
+                    width: 42,
+                    height: 42,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFEFF4FF),
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                    child: const Icon(Icons.person, color: AppTheme.primary),
                   ),
-                ),
-                SizedBox(width: 12),
-                Expanded(
-                  child: _MiniBanner(
-                    title: "App Dev",
-                    icon: Icons.phone_iphone_rounded,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 18),
-            const Text(
-              "Choose your course",
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w800,
-                color: AppTheme.textSoft,
+                ],
               ),
-            ),
-            const SizedBox(height: 12),
-            SizedBox(
-              height: 44,
-              child: ListView.separated(
-                scrollDirection: Axis.horizontal,
-                itemBuilder: (_, i) => CategoryChip(
-                  label: categories[i],
-                  selected: selectedIndex == i,
-                  onTap: () => setState(() => selectedIndex = i),
-                ),
-                separatorBuilder: (_, __) => const SizedBox(width: 10),
-                itemCount: categories.length,
+              const SizedBox(height: 14),
+              const SearchField(hint: "Find Course"),
+              const SizedBox(height: 14),
+              const Row(
+                children: [
+                  Expanded(
+                    child: _MiniBanner(
+                      title: "Coding",
+                      icon: Icons.code_rounded,
+                    ),
+                  ),
+                  SizedBox(width: 12),
+                  Expanded(
+                    child: _MiniBanner(
+                      title: "App Dev",
+                      icon: Icons.phone_iphone_rounded,
+                    ),
+                  ),
+                ],
               ),
-            ),
-            const SizedBox(height: 14),
+              const SizedBox(height: 18),
+              const Text(
+                "Choose your course",
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w800,
+                  color: AppTheme.textSoft,
+                ),
+              ),
+              const SizedBox(height: 12),
+              SizedBox(
+                height: 44,
+                child: ListView.separated(
+                  scrollDirection: Axis.horizontal,
+                  itemBuilder: (_, i) => CategoryChip(
+                    label: categories[i],
+                    selected: selectedIndex == i,
+                    onTap: () => setState(() => selectedIndex = i),
+                  ),
+                  separatorBuilder: (_, __) => const SizedBox(width: 10),
+                  itemCount: categories.length,
+                ),
+              ),
+              const SizedBox(height: 14),
 
-            // Loading and Error States
-            if (isLoading)
-              const Expanded(
-                child: Center(
-                  child: CircularProgressIndicator(
-                    color: AppTheme.primary,
+              // Loading and Error States
+              if (isLoading)
+                const Center(
+                  child: Padding(
+                    padding: EdgeInsets.all(40.0),
+                    child: CircularProgressIndicator(
+                      color: AppTheme.primary,
+                    ),
                   ),
-                ),
-              )
-            else if (errorMessage != null)
-              Expanded(
-                child: Center(
+                )
+              else if (errorMessage != null)
+                Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -172,41 +176,43 @@ class _ProgramsScreenState extends State<ProgramsScreen> {
                       ),
                     ],
                   ),
-                ),
-              )
-            else if (filtered.isEmpty)
-              const Expanded(
-                child: Center(
-                  child: Text(
-                    'No programs available',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: AppTheme.textSoft,
+                )
+              else if (filtered.isEmpty)
+                  const Center(
+                    child: Padding(
+                      padding: EdgeInsets.all(40.0),
+                      child: Text(
+                        'No programs available',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: AppTheme.textSoft,
+                        ),
+                      ),
                     ),
+                  )
+                else
+                // FIXED: Used shrinkWrap and NeverScrollableScrollPhysics to work inside SingleChildScrollView
+                  ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: filtered.length,
+                    itemBuilder: (_, i) {
+                      final item = filtered[i];
+                      return ProgramCard(
+                        program: item,
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => ProgramDetailsScreen(program: item),
+                            ),
+                          );
+                        },
+                      );
+                    },
                   ),
-                ),
-              )
-            else
-              Expanded(
-                child: ListView.builder(
-                  itemCount: filtered.length,
-                  itemBuilder: (_, i) {
-                    final item = filtered[i];
-                    return ProgramCard(
-                      program: item,
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => ProgramDetailsScreen(program: item),
-                          ),
-                        );
-                      },
-                    );
-                  },
-                ),
-              ),
-          ],
+            ],
+          ),
         ),
       ),
     );
